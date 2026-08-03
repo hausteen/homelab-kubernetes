@@ -1,0 +1,119 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: authentik # putting this in authentik intentionally so that the valuesFrom secret can be used
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: authentik
+  targetNamespace: authentik
+  chartRef:
+    kind: HelmChart
+    name: authentik
+    namespace: flux-system
+  values:
+    global:
+      securityContext: # pod level
+        runAsNonRoot: true
+        runAsGroup: 1000
+        runAsUser: 1000
+        fsGroup: 1000
+      security:
+        allowInsecureImages: false
+    authentik:
+      log_level: info
+      # secret_key: "" # will be merged with the values from down below.
+      error_reporting:
+        enabled: false
+      disable_update_check: true
+      disable_startup_analytics: true
+      postgresql:
+        host: authentik-db-rw.authentik.svc.cluster.local
+        port: 5432
+        name: app # database name
+        user: app # username
+        sslmode: verify-full
+        sslrootcert: /certs/ca.crt
+        sslcert: /certs/tls.crt # using mtls authentication instead of a password
+        sslkey: /certs/tls.key
+    server:
+      replicas: 2
+      containerSecurityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      volumeMounts:
+      - name: certificates
+        mountPath: /certs
+        readOnly: true
+      volumes:
+      - name: certificates
+        projected:
+          defaultMode: 0600
+          sources:
+          - configMap:
+              name: hunt-internal-trust-bundle
+              items:
+              - key: ca.crt
+                path: ca.crt
+          - secret:
+              name: authentik-server-certificate
+              items:
+              - key: tls.crt
+                path: tls.crt
+              - key: tls.key
+                path: tls.key
+    worker:
+      replicas: 2
+      containerSecurityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      volumeMounts:
+      - name: certificates
+        mountPath: /certs
+        readOnly: true
+      volumes:
+      - name: certificates
+        projected:
+          defaultMode: 0600
+          sources:
+          - configMap:
+              name: hunt-internal-trust-bundle
+              items:
+              - key: ca.crt
+                path: ca.crt
+          - secret:
+              name: authentik-server-certificate
+              items:
+              - key: tls.crt
+                path: tls.crt
+              - key: tls.key
+                path: tls.key
+    postgresql:
+      enabled: false # do not enable the builtin postgres chart
+  valuesFrom:
+  - kind: Secret
+    name: authentik-server-secret-key
+    valuesKey: secret-key
+    targetPath: authentik.secret_key

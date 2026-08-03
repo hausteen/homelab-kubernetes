@@ -1,0 +1,25 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: authentik-db
+  namespace: authentik
+spec:
+  instances: 3
+  certificates:
+    serverCASecret: authentik-database-server-certificate
+    serverTLSSecret: authentik-database-server-certificate
+    clientCASecret: authentik-database-client-certificate
+    replicationTLSSecret: authentik-database-client-certificate
+  postgresql:
+    pg_hba:
+    - hostssl app all all cert
+  storage:
+    pvcTemplate:
+      accessModes:
+      - ReadWriteOncePod
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: no-replication
+      volumeMode: Filesystem
+  logLevel: info
