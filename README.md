@@ -57,10 +57,10 @@ git-repository
                         resources
 ```
 
-Question: Where to put files?  
+Question: Where to put files?
 Answer: Try and keep all code for an application in the same manifest's folder so that way its easy to remove any piece of code. For example: Keycloak needs a postgress database, a certificate, a realm file, a httproute, etc. All go in the manifests/keycloak folder.
 
-Question: Why are there so many base and overlay folders?  
+Question: Why are there so many base and overlay folders?
 Answer: This is strategic. It allows me to:
 - set up fully independent clusters.
 - control software dependency installation order easily by using software name and time (the pre-install, install, post-install folders)
@@ -106,7 +106,11 @@ If the cluster installs trust-manager and sets up a trust bundle automatically, 
 | 4             | coredns-post-install                      | manifests/coredns/post-install/overlays/lab                         | coredns-install, nginx-gateway-fabric-post-install |
 | 4             | cilium-post-install-2                     | manifests/cilium/post-install-2/overlays/lab                        | cilium-install, nginx-gateway-fabric-post-install |
 | 4             | longhorn-post-install                     | manifests/longhorn/post-install/overlays/lab                        | longhorn-install, nginx-gateway-fabric-post-install |
-| 4             | openbao-pre-install                       | manifests/openbao/pre-install/overlays/lab                          | cert-manager-post-install, trust-manager-post-install |
+| 4             | openbao-pre-install                       | manifests/openbao/pre-install/overlays/lab                          | cert-manager-post-install, trust-manager-post-install, external-secrets-operator-install |
 | 5             | openbao-install                           | manifests/openbao/install/overlays/lab                              | longhorn-install, openbao-pre-install |
 | 6             | openbao-post-install                      | manifests/openbao/post-install/overlays/lab                         | openbao-install, nginx-gateway-fabric-post-install |
 | 6             | external-secrets-operator-post-install    | manifests/external-secrets-operator/post-install/overlays/lab       | external-secrets-operator-install, openbao-install, trust-manager-post-install |
+| 7             | authentik-pre-install-1                   | manifests/authentik/pre-install-1/overlays/lab                      | cert-manager-post-install, external-secrets-operator-install |
+| 8             | authentik-pre-install-2                   | manifests/authentik/pre-install-2/overlays/lab                      | authentik-pre-install-1, cloudnativepg-install |
+| 9             | authentik-install                         | manifests/authentik/install/overlays/lab                            | authentik-pre-install-2 |
+| 10            | authentik-post-install                    | manifests/authentik/post-install/overlays/lab                       | authentik-install, nginx-gateway-fabric-post-install |

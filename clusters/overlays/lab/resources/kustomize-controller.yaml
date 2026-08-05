@@ -393,6 +393,8 @@ spec:
     namespace: flux-system
   - name: trust-manager-post-install
     namespace: flux-system
+  - name: external-secrets-operator-install
+    namespace: flux-system
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -470,6 +472,92 @@ spec:
   prune: true
   wait: true
   path: manifests/external-secrets-operator/post-install/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: authentik-pre-install-1
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: cert-manager-post-install
+    namespace: flux-system
+  - name: external-secrets-operator-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/authentik/pre-install-1/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: authentik-pre-install-2
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: authentik-pre-install-1
+    namespace: flux-system
+  - name: cloudnativepg-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/authentik/pre-install-2/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: authentik-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: authentik-pre-install-2
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/authentik/install/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: authentik-post-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: authentik-install
+    namespace: flux-system
+  - name: nginx-gateway-fabric-post-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/authentik/post-install/overlays/lab
 ...
 # ---
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
