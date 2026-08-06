@@ -37,11 +37,12 @@ spec:
     server:
       auditStorage:
         enabled: false
-      # dataStorage: # only used for raft  or file backend storage is used.
-      #   size: 5Gi
-      #   # storageClass: no-replication
-      #   storageClass: replication
-      #   accessMode: ReadWriteOncePod
+      dataStorage: # only used for raft or file backend storage
+        enabled: false
+        # size: 5Gi
+        # storageClass: no-replication
+        # storageClass: replication
+        # accessMode: ReadWriteOncePod
       logFormat: json
       logLevel: info
       livenessProbe:
