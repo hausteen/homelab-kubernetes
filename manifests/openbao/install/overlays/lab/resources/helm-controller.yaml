@@ -37,11 +37,11 @@ spec:
     server:
       auditStorage:
         enabled: false
-      dataStorage:
-        size: 5Gi
-        # storageClass: no-replication
-        storageClass: replication
-        accessMode: ReadWriteOncePod
+      # dataStorage: # only used for raft  or file backend storage is used.
+      #   size: 5Gi
+      #   # storageClass: no-replication
+      #   storageClass: replication
+      #   accessMode: ReadWriteOncePod
       logFormat: json
       logLevel: info
       livenessProbe:
@@ -311,8 +311,10 @@ spec:
             tls_cert_file = "/openbao/secrets/tls.crt"
             tls_key_file  = "/openbao/secrets/tls.key"
           }
-          storage "file" {
-            path = "/openbao/data"
+          storage "postgresql" {
+            connection_url = "postgres://app@openbao-db-rw.openbao.svc.cluster.local:5432/app?sslmode=verify-full&sslrootcert=/openbao/secrets/ca.crt&sslcert=/openbao/secrets/tls.crt&sslkey=/openbao/secrets/tls.key"
+            ha_enabled = "true"
+            max_connect_retries: 0 # sets it to unlimited retries to connect to the database
           }
           audit "file" "to-stdout" {
             description = "This audit device should never fail."

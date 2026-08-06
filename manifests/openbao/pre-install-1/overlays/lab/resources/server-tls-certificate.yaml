@@ -43,5 +43,6 @@ spec:
   ipAddresses:
   - 127.0.0.1
   - "::1"
+  commonName: app
   duration: 720h # 30 days * 24 hours
   renewBefore: 120h # 5 days before it ends. 5 days * 24 hours

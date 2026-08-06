@@ -385,7 +385,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: openbao-pre-install
+  name: openbao-pre-install-1
   namespace: flux-system
 spec:
   dependsOn:
@@ -403,7 +403,29 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/openbao/pre-install/overlays/lab
+  path: manifests/openbao/pre-install-1/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: openbao-pre-install-2
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: openbao-pre-install-1
+    namespace: flux-system
+  - name: cloudnativepg-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/openbao/pre-install-2/overlays/lab
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -413,9 +435,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-  - name: longhorn-install
-    namespace: flux-system
-  - name: openbao-pre-install
+  - name: openbao-pre-install-2
     namespace: flux-system
   sourceRef:
     kind: GitRepository

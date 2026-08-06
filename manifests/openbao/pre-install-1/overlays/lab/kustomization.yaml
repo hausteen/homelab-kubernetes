@@ -3,3 +3,5 @@ kind: Kustomization
 resources:
 - ../../base
 - resources/server-tls-certificate.yaml
+- resources/certificate-openbao-database-client.yaml
+- resources/certificate-openbao-database-server.yaml
