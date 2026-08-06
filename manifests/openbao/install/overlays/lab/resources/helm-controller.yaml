@@ -96,8 +96,8 @@ spec:
       ha:
         enabled: true
         replicas: 3
-        apiAddr: "https://openbao.openbao.svc.cluster.local:8200"       # not sure if this is right
-        clusterAddr: "https://openbao.openbao.svc.cluster.local:8201"   # not sure if this is right
+        # apiAddr: "" # this is set to the pod ip by default
+        clusterAddr: "https://openbao.openbao.svc.cluster.local:8201"
         config: |
           ui = true
           listener "tcp" {
