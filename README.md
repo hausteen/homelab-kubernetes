@@ -107,11 +107,11 @@ If the cluster installs trust-manager and sets up a trust bundle automatically, 
 | 4             | cilium-post-install-2                     | manifests/cilium/post-install-2/overlays/lab                        | cilium-install, nginx-gateway-fabric-post-install |
 | 4             | longhorn-post-install                     | manifests/longhorn/post-install/overlays/lab                        | longhorn-install, nginx-gateway-fabric-post-install |
 | 4             | openbao-pre-install-1                     | manifests/openbao/pre-install-1/overlays/lab                        | cert-manager-post-install, trust-manager-post-install, external-secrets-operator-install |
-| 5             | openbao-pre-install-2                     | manifests/openbao/pre-install-2/overlays/lab                        | openbao-pre-install-1, cloudnativepg-install |
+| 4             | authentik-pre-install-1                   | manifests/authentik/pre-install-1/overlays/lab                      | cert-manager-post-install, external-secrets-operator-install |
+| 5             | openbao-pre-install-2                     | manifests/openbao/pre-install-2/overlays/lab                        | openbao-pre-install-1, cloudnativepg-install, longhorn-install |
+| 5             | authentik-pre-install-2                   | manifests/authentik/pre-install-2/overlays/lab                      | authentik-pre-install-1, cloudnativepg-install, longhorn-install |
 | 6             | openbao-install                           | manifests/openbao/install/overlays/lab                              | openbao-pre-install-2 |
+| 6             | authentik-install                         | manifests/authentik/install/overlays/lab                            | authentik-pre-install-2 |
 | 7             | openbao-post-install                      | manifests/openbao/post-install/overlays/lab                         | openbao-install, nginx-gateway-fabric-post-install |
+| 7             | authentik-post-install                    | manifests/authentik/post-install/overlays/lab                       | authentik-install, nginx-gateway-fabric-post-install |
 | 7             | external-secrets-operator-post-install    | manifests/external-secrets-operator/post-install/overlays/lab       | external-secrets-operator-install, openbao-install, trust-manager-post-install |
-| 8             | authentik-pre-install-1                   | manifests/authentik/pre-install-1/overlays/lab                      | cert-manager-post-install, external-secrets-operator-install |
-| 9             | authentik-pre-install-2                   | manifests/authentik/pre-install-2/overlays/lab                      | authentik-pre-install-1, cloudnativepg-install |
-| 10            | authentik-install                         | manifests/authentik/install/overlays/lab                            | authentik-pre-install-2 |
-| 11            | authentik-post-install                    | manifests/authentik/post-install/overlays/lab                       | authentik-install, nginx-gateway-fabric-post-install |

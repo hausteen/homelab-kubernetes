@@ -417,6 +417,8 @@ spec:
     namespace: flux-system
   - name: cloudnativepg-install
     namespace: flux-system
+  - name: longhorn-install
+    namespace: flux-system
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -526,6 +528,8 @@ spec:
   - name: authentik-pre-install-1
     namespace: flux-system
   - name: cloudnativepg-install
+    namespace: flux-system
+  - name: longhorn-install
     namespace: flux-system
   sourceRef:
     kind: GitRepository
