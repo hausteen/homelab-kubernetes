@@ -39,10 +39,6 @@ spec:
         enabled: false
       dataStorage: # only used for raft or file backend storage
         enabled: false
-        # size: 5Gi
-        # storageClass: no-replication
-        # storageClass: replication
-        # accessMode: ReadWriteOncePod
       logFormat: json
       logLevel: info
       livenessProbe:
@@ -71,7 +67,7 @@ spec:
         readOnly: true
       volumes:
       - name: secrets
-        projected: # look into clusterTrustBundle projected volumes to use here instead of a configmap for the ca trust bundle
+        projected:
           sources:
           - secret:
               name: openbao-current-unseal-key
@@ -95,9 +91,9 @@ spec:
         name: openbao-server
       service:
         active:
-          enabled: false # wont work since i'm not using kubernetes service discovery
+          enabled: false # disabling since i'm not using kubernetes service discovery
         standby:
-          enabled: false # wont work since i'm not using kubernetes service discovery
+          enabled: false # disabling since i'm not using kubernetes service discovery
       ha:
         enabled: true
         replicas: 3
@@ -187,17 +183,6 @@ spec:
                 }
               }
             }
-            # request "secrets-engine-enable-database" {
-            #   operation = "update"
-            #   path = "sys/mounts/database"
-            #   config = {
-            #     default_lease_ttl = "1h"
-            #     max_lease_ttl = "24h"
-            #   }
-            #   data = {
-            #     type = "database"
-            #   }
-            # }
             ##################################
             ########## Auth methods ##########
             ##################################
@@ -231,17 +216,17 @@ spec:
                 }
               }
             }
-            # request "auth-method-enable-jwt" {
-            #   operation = "update"
-            #   path = "sys/auth/jwt"
-            #   data = {
-            #     type = "jwt"
-            #     config = {
-            #       default_lease_ttl = "1h"
-            #       max_lease_ttl = "24h"
-            #     }
-            #   }
-            # }
+            request "auth-method-enable-oidc" {
+              operation = "update"
+              path = "sys/auth/oidc"
+              data = {
+                type = "oidc"
+                config = {
+                  default_lease_ttl = "1h"
+                  max_lease_ttl = "24h"
+                }
+              }
+            }
             ##############################
             ########## Userpass ##########
             ##############################
@@ -285,189 +270,3 @@ spec:
             previous_key_id = "previous"
             previous_key = "file:///openbao/secrets/previous-unseal.key"
           }
-      # standalone:
-      #   enabled: true
-      #   config: |
-      #     ui = true
-      #     listener "tcp" {
-      #       tls_disable = "false"
-      #       address = "[::]:8200"
-      #       cluster_address = "[::]:8201"
-      #       tls_min_version = "tls13"
-      #       tls_cert_file = "/openbao/secrets/tls.crt"
-      #       tls_key_file  = "/openbao/secrets/tls.key"
-      #     }
-      #     storage "postgresql" {
-      #       connection_url = "postgres://app@openbao-db-rw.openbao.svc.cluster.local:5432/app?sslmode=verify-full&sslrootcert=/openbao/secrets/ca.crt&sslcert=/openbao/secrets/tls.crt&sslkey=/openbao/secrets/tls.key"
-      #       ha_enabled = "true"
-      #       max_connect_retries = 0 # sets it to unlimited retries to connect to the database
-      #     }
-      #     audit "file" "to-stdout" {
-      #       description = "This audit device should never fail."
-      #       options {
-      #         file_path = "stdout"
-      #         log_raw = "true"
-      #       }
-      #     }
-      #     initialize "everything" { # dependency order matters. it is executed top down.
-      #       ##############################
-      #       ########## Policies ##########
-      #       ##############################
-      #       request "policy-acl-create-superuser" {
-      #         operation = "update"
-      #         path = "sys/policies/acl/superuser"
-      #         data = {
-      #           policy = <<-END
-      #             path "*" {
-      #               capabilities = ["create", "read", "update", "delete", "patch", "list", "scan", "sudo"]
-      #             }
-      #             END
-      #         }
-      #       }
-      #       request "policy-acl-create-kv1-rw" {
-      #         operation = "update"
-      #         path = "sys/policies/acl/kv1-rw"
-      #         data = {
-      #           policy = <<-END
-      #             path "secret/*" {
-      #               capabilities = ["create", "read", "update", "delete", "patch", "list"]
-      #             }
-      #             END
-      #         }
-      #       }
-      #       # request "policy-password-create-long-complex-password" {
-      #       #   operation = "update"
-      #       #   path = "sys/policies/password/long-complex-password"
-      #       #   data = {
-      #       #     policy = <<-END
-      #       #       length = 64
-      #       #       rule "charset" {
-      #       #         charset = "abcdefghijklmnopqrstuvwxyz"
-      #       #         min-chars = 13
-      #       #       }
-      #       #       rule "charset" {
-      #       #         charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-      #       #         min-chars = 13
-      #       #       }
-      #       #       rule "charset" {
-      #       #         charset = "0123456789"
-      #       #         min-chars = 5
-      #       #       }
-      #       #       rule "charset" {
-      #       #         charset = "!@#$%^&*()"
-      #       #         min-chars = 5
-      #       #       }
-      #       #       END
-      #       #   }
-      #       # }
-      #       #####################################
-      #       ########## Secrets engines ##########
-      #       #####################################
-      #       request "secrets-engine-enable-kv-version1" {
-      #         operation = "update"
-      #         path = "sys/mounts/secret"
-      #         data = {
-      #           type = "kv"
-      #           options = {
-      #             version = "1"
-      #           }
-      #         }
-      #       }
-      #       # request "secrets-engine-enable-database" {
-      #       #   operation = "update"
-      #       #   path = "sys/mounts/database"
-      #       #   config = {
-      #       #     default_lease_ttl = "1h"
-      #       #     max_lease_ttl = "24h"
-      #       #   }
-      #       #   data = {
-      #       #     type = "database"
-      #       #   }
-      #       # }
-      #       ##################################
-      #       ########## Auth methods ##########
-      #       ##################################
-      #       request "auth-method-tune-token" {
-      #         operation = "update"
-      #         path = "sys/auth/token/tune"
-      #         data = {
-      #           default_lease_ttl = 1800 # 30m
-      #           max_lease_ttl = 86400 # 24h
-      #         }
-      #       }
-      #       request "auth-method-enable-userpass" {
-      #         operation = "update"
-      #         path = "sys/auth/userpass"
-      #         data = {
-      #           type = "userpass"
-      #           config = {
-      #             default_lease_ttl = "1h"
-      #             max_lease_ttl = "4h"
-      #           }
-      #         }
-      #       }
-      #       request "auth-method-enable-kubernetes" {
-      #         operation = "update"
-      #         path = "sys/auth/kubernetes"
-      #         data = {
-      #           type = "kubernetes"
-      #           config = {
-      #             default_lease_ttl = "1h"
-      #             max_lease_ttl = "24h"
-      #           }
-      #         }
-      #       }
-      #       # request "auth-method-enable-jwt" {
-      #       #   operation = "update"
-      #       #   path = "sys/auth/jwt"
-      #       #   data = {
-      #       #     type = "jwt"
-      #       #     config = {
-      #       #       default_lease_ttl = "1h"
-      #       #       max_lease_ttl = "24h"
-      #       #     }
-      #       #   }
-      #       # }
-      #       ##############################
-      #       ########## Userpass ##########
-      #       ##############################
-      #       request "userpass-create-admin" {
-      #         operation = "update"
-      #         path = "auth/userpass/users/admin"
-      #         data = {
-      #           password = {
-      #             eval_type = "string"
-      #             eval_source = "file"
-      #             path = "/openbao/secrets/admin-password.txt"
-      #           }
-      #           token_policies = ["superuser"]
-      #         }
-      #       }
-      #       ################################
-      #       ########## Kubernetes ##########
-      #       ################################
-      #       request "auth-method-configure-kubernetes" {
-      #         operation = "update"
-      #         path = "auth/kubernetes/config"
-      #         data = {
-      #           kubernetes_host = "https://kubernetes.default.svc:443"
-      #         }
-      #       }
-      #       request "role-kubernetes-create-kv1-rw" {
-      #         operation = "update"
-      #         path = "auth/kubernetes/role/kv1-rw"
-      #         data = {
-      #           bound_service_account_names = ["external-secrets-operator"]
-      #           bound_service_account_namespaces = ["external-secrets"]
-      #           token_policies = ["kv1-rw"]
-      #           # token_policies = ["kv1-rw", "long-complex-password"]
-      #           audience = "openbao"
-      #         }
-      #       }
-      #     }
-      #     seal "static" {
-      #       current_key_id = "current"
-      #       current_key = "file:///openbao/secrets/current-unseal.key"
-      #       previous_key_id = "previous"
-      #       previous_key = "file:///openbao/secrets/previous-unseal.key"
-      #     }
