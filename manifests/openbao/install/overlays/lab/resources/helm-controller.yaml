@@ -93,11 +93,14 @@ spec:
                 path: ca.crt
       serviceAccount:
         name: openbao-server
+      service:
+        active:
+          enabled: false # wont work since i'm not using kubernetes service discovery
+        standby:
+          enabled: false # wont work since i'm not using kubernetes service discovery
       ha:
         enabled: true
         replicas: 3
-        # apiAddr: "" # this is set to the pod ip by default
-        clusterAddr: "https://openbao.openbao.svc.cluster.local:8201"
         config: |
           ui = true
           listener "tcp" {
@@ -146,31 +149,31 @@ spec:
                   END
               }
             }
-            request "policy-password-create-long-complex-password" {
-              operation = "update"
-              path = "sys/policies/password/long-complex-password"
-              data = {
-                policy = <<-END
-                  length = 64
-                  rule "charset" {
-                    charset = "abcdefghijklmnopqrstuvwxyz"
-                    min-chars = 13
-                  }
-                  rule "charset" {
-                    charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    min-chars = 13
-                  }
-                  rule "charset" {
-                    charset = "0123456789"
-                    min-chars = 5
-                  }
-                  rule "charset" {
-                    charset = "!@#$%^&*()"
-                    min-chars = 5
-                  }
-                  END
-              }
-            }
+            # request "policy-password-create-long-complex-password" {
+            #   operation = "update"
+            #   path = "sys/policies/password/long-complex-password"
+            #   data = {
+            #     policy = <<-END
+            #       length = 64
+            #       rule "charset" {
+            #         charset = "abcdefghijklmnopqrstuvwxyz"
+            #         min-chars = 13
+            #       }
+            #       rule "charset" {
+            #         charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            #         min-chars = 13
+            #       }
+            #       rule "charset" {
+            #         charset = "0123456789"
+            #         min-chars = 5
+            #       }
+            #       rule "charset" {
+            #         charset = "!@#$%^&*()"
+            #         min-chars = 5
+            #       }
+            #       END
+            #   }
+            # }
             #####################################
             ########## Secrets engines ##########
             #####################################
@@ -270,7 +273,8 @@ spec:
               data = {
                 bound_service_account_names = ["external-secrets-operator"]
                 bound_service_account_namespaces = ["external-secrets"]
-                token_policies = ["kv1-rw", "long-complex-password"]
+                token_policies = ["kv1-rw"]
+                # token_policies = ["kv1-rw", "long-complex-password"]
                 audience = "openbao"
               }
             }
@@ -331,31 +335,31 @@ spec:
       #             END
       #         }
       #       }
-      #       request "policy-password-create-long-complex-password" {
-      #         operation = "update"
-      #         path = "sys/policies/password/long-complex-password"
-      #         data = {
-      #           policy = <<-END
-      #             length = 64
-      #             rule "charset" {
-      #               charset = "abcdefghijklmnopqrstuvwxyz"
-      #               min-chars = 13
-      #             }
-      #             rule "charset" {
-      #               charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-      #               min-chars = 13
-      #             }
-      #             rule "charset" {
-      #               charset = "0123456789"
-      #               min-chars = 5
-      #             }
-      #             rule "charset" {
-      #               charset = "!@#$%^&*()"
-      #               min-chars = 5
-      #             }
-      #             END
-      #         }
-      #       }
+      #       # request "policy-password-create-long-complex-password" {
+      #       #   operation = "update"
+      #       #   path = "sys/policies/password/long-complex-password"
+      #       #   data = {
+      #       #     policy = <<-END
+      #       #       length = 64
+      #       #       rule "charset" {
+      #       #         charset = "abcdefghijklmnopqrstuvwxyz"
+      #       #         min-chars = 13
+      #       #       }
+      #       #       rule "charset" {
+      #       #         charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      #       #         min-chars = 13
+      #       #       }
+      #       #       rule "charset" {
+      #       #         charset = "0123456789"
+      #       #         min-chars = 5
+      #       #       }
+      #       #       rule "charset" {
+      #       #         charset = "!@#$%^&*()"
+      #       #         min-chars = 5
+      #       #       }
+      #       #       END
+      #       #   }
+      #       # }
       #       #####################################
       #       ########## Secrets engines ##########
       #       #####################################
@@ -455,7 +459,8 @@ spec:
       #         data = {
       #           bound_service_account_names = ["external-secrets-operator"]
       #           bound_service_account_namespaces = ["external-secrets"]
-      #           token_policies = ["kv1-rw", "long-complex-password"]
+      #           token_policies = ["kv1-rw"]
+      #           # token_policies = ["kv1-rw", "long-complex-password"]
       #           audience = "openbao"
       #         }
       #       }
@@ -466,8 +471,3 @@ spec:
       #       previous_key_id = "previous"
       #       previous_key = "file:///openbao/secrets/previous-unseal.key"
       #     }
-
-    ##################################################################################################
-
-    # HA config with raft
-    # race condition bug = https://github.com/openbao/openbao/issues/2274
