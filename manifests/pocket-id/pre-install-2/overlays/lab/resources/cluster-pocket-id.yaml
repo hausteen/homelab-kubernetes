@@ -1,0 +1,25 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pocket-id-db
+  namespace: pocket-id
+spec:
+  instances: 3
+  certificates:
+    serverCASecret: pocket-id-database-server-certificate
+    serverTLSSecret: pocket-id-database-server-certificate
+    clientCASecret: pocket-id-database-client-certificate
+    replicationTLSSecret: pocket-id-database-client-certificate
+  postgresql:
+    pg_hba:
+    - hostssl app all all cert
+  storage:
+    pvcTemplate:
+      accessModes:
+      - ReadWriteOncePod
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: no-replication
+      volumeMode: Filesystem
+  logLevel: info

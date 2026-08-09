@@ -1,0 +1,29 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pocket-id-database-client
+  namespace: pocket-id
+spec:
+  secretName: pocket-id-database-client-certificate
+  secretTemplate:
+    labels:
+      cnpg.io/reload: ""
+  issuerRef:
+    name: hunt-internal
+    kind: ClusterIssuer
+    group: cert-manager.io
+  privateKey:
+    rotationPolicy: Always
+    algorithm: ECDSA
+    size: 256
+  isCA: false
+  subject:
+    countries:
+    - usa
+    organizations:
+    - hunt
+  commonName: streaming_replica
+  usages:
+  - client auth
+  duration: 720h # 30 days * 24 hours
+  renewBefore: 120h # 5 days before it ends. 5 days * 24 hours

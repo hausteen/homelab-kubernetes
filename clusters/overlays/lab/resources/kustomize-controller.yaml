@@ -583,6 +583,92 @@ spec:
   wait: true
   path: manifests/authentik/post-install/overlays/lab
 ...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: pocket-id-pre-install-1
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: cert-manager-post-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/pocket-id/pre-install-1/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: pocket-id-pre-install-2
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: pocket-id-pre-install-1
+    namespace: flux-system
+  - name: cloudnativepg-install
+    namespace: flux-system
+  - name: longhorn-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/pocket-id/pre-install-2/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: pocket-id-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: pocket-id-pre-install-2
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/pocket-id/install/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: pocket-id-post-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: pocket-id-install
+    namespace: flux-system
+  - name: nginx-gateway-fabric-post-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/pocket-id/post-install/overlays/lab
+...
 # ---
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
 # kind: Kustomization
