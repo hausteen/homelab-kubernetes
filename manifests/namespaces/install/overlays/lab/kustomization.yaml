@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- resources/authentik.yaml
 - resources/cert-manager.yaml
 - resources/cnpg-system.yaml
 - resources/coredns.yaml
@@ -12,4 +11,5 @@ resources:
 - resources/longhorn-system.yaml
 - resources/nginx-gateway-fabric.yaml
 - resources/openbao.yaml
+- resources/pocket-id.yaml
 - resources/trust-manager.yaml

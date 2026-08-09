@@ -91,7 +91,7 @@ spec:
         $ORIGIN hunt.internal. ; base domain name
         ; start of authority resource record defining the key characteristics of the zone (domain)
         @ IN SOA ns1.hunt.internal. placeholder-email.hunt.internal. (
-          3     ; serial number - change this number each time a change is made or else coredns won't pick up the change
+          4     ; serial number - change this number each time a change is made or else coredns won't pick up the change
           60    ; refresh       - every minute
           300   ; update retry  - every 5 minutes
           86400 ; expiry        - 24 hours
@@ -102,6 +102,5 @@ spec:
         longhorn     IN A 192.168.30.2
         openbao      IN A 192.168.30.2
         hubble       IN A 192.168.30.2
-        authentik    IN A 192.168.30.2
         auth         IN A 192.168.30.2
       # dont forget... serial number - change this number each time a change is made or else coredns won't pick up the change
