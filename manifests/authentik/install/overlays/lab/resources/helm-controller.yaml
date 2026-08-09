@@ -62,7 +62,7 @@ spec:
       volumeMounts:
       - name: certificates
         mountPath: /certs
-        readOnly: true
+        readOnly: false
       volumes:
       - name: certificates
         projected:
@@ -92,7 +92,7 @@ spec:
       volumeMounts:
       - name: certificates
         mountPath: /certs
-        readOnly: true
+        readOnly: false
       volumes:
       - name: certificates
         projected:

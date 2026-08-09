@@ -64,7 +64,7 @@ spec:
       volumeMounts:
       - name: secrets
         mountPath: /openbao/secrets/
-        readOnly: true
+        readOnly: false
       volumes:
       - name: secrets
         projected:
