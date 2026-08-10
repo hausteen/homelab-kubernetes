@@ -52,7 +52,7 @@ spec:
         - name: secrets
           mountPath: /app/secrets/
           readOnly: false
-        - name: pocket-id-data-volume
+        - name: data-volume
           mountPath: /app/data/
           readOnly: false
         securityContext:
@@ -88,7 +88,7 @@ spec:
                 path: ca.crt
   volumeClaimTemplates:
   - metadata:
-      name: pocket-id-data-volume
+      name: data-volume
       namespace: pocket-id
     spec:
       storageClassName: no-replication
