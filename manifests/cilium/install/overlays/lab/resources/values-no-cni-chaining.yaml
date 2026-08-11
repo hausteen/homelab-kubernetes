@@ -28,12 +28,11 @@ securityContext:
 k8sServiceHost: localhost
 k8sServicePort: 7445
 cluster:
-  name: lab
+  name: cluster
   id: 1
 encryption:
-  enabled: true
-  type: wireguard
-  nodeEncryption: true
+  enabled: false
+  type: ztunnel
 gatewayAPI:
   enabled: false
 l7Proxy: false

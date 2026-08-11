@@ -25,7 +25,7 @@ spec:
     kind: OCIRepository
     name: cilium
     namespace: flux-system
-  values: # copied from either of the values files in this directory. currently matches values-yes-cni-chaining.yaml
+  values: # copied from either of the values files in this directory. currently matches values-no-cni-chaining.yaml
     cgroup:
       autoMount:
         enabled: false
@@ -55,12 +55,11 @@ spec:
     k8sServiceHost: localhost
     k8sServicePort: 7445
     cluster:
-      name: lab
+      name: cluster
       id: 1
     encryption:
-      enabled: true
-      type: wireguard
-      nodeEncryption: true
+      enabled: false
+      type: ztunnel
     gatewayAPI:
       enabled: false
     l7Proxy: false
@@ -89,8 +88,4 @@ spec:
       leaseRenewDeadline: 4s
       leaseRetryPeriod: 2s
     bpf:
-      masquerade: false
-    socketLB:
-      hostNamespaceOnly: true
-    cni:
-      exclusive: false
+      masquerade: true

@@ -28,12 +28,11 @@ securityContext:
 k8sServiceHost: localhost
 k8sServicePort: 7445
 cluster:
-  name: lab
+  name: cluster
   id: 1
 encryption:
-  enabled: true
-  type: wireguard
-  nodeEncryption: true
+  enabled: false
+  type: ztunnel
 gatewayAPI:
   enabled: false
 l7Proxy: false
@@ -62,7 +61,7 @@ l2announcements:
   leaseRenewDeadline: 4s
   leaseRetryPeriod: 2s
 bpf:
-  masquerade: false
+  masquerade: false # not sure if cilium's ztunnel needs this set to false or true
 socketLB:
   hostNamespaceOnly: true
 cni:
