@@ -58,7 +58,7 @@ spec:
       name: cluster
       id: 1
     encryption:
-      enabled: false
+      enabled: true
       type: ztunnel
     gatewayAPI:
       enabled: false
