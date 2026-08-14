@@ -31,7 +31,7 @@ cluster:
   name: cluster
   id: 1
 encryption:
-  enabled: true
+  enabled: false
   type: ztunnel
 gatewayAPI:
   enabled: false

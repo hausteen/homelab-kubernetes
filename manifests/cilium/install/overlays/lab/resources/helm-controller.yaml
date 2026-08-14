@@ -25,7 +25,7 @@ spec:
     kind: OCIRepository
     name: cilium
     namespace: flux-system
-  values: # copied from either of the values files in this directory. currently matches values-no-cni-chaining.yaml
+  values: # copied from either of the values files in this directory. currently matches values-yes-cni-chaining.yaml
     cgroup:
       autoMount:
         enabled: false
@@ -58,7 +58,7 @@ spec:
       name: cluster
       id: 1
     encryption:
-      enabled: true
+      enabled: false
       type: ztunnel
     gatewayAPI:
       enabled: false
@@ -88,4 +88,8 @@ spec:
       leaseRenewDeadline: 4s
       leaseRetryPeriod: 2s
     bpf:
-      masquerade: true
+      masquerade: false # not sure if cilium's ztunnel needs this set to false or true. istio needs this set to false
+    socketLB:
+      hostNamespaceOnly: true
+    cni:
+      exclusive: false

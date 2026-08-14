@@ -61,7 +61,7 @@ l2announcements:
   leaseRenewDeadline: 4s
   leaseRetryPeriod: 2s
 bpf:
-  masquerade: false # not sure if cilium's ztunnel needs this set to false or true
+  masquerade: false # not sure if cilium's ztunnel needs this set to false or true. istio needs this set to false
 socketLB:
   hostNamespaceOnly: true
 cni:
