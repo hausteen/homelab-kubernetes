@@ -68,6 +68,11 @@ Answer: This is strategic. It allows me to:
 - base off other overlays for quick testing
 - it allows me to keep installation and configuration in the same "mainfests" folder, split by software name. It's easier for me to mentally reason through.
 
+### Naming Conventions
+
+- Files: kind-application-component-subcomponent-purpose-version
+- Manifests: application-component-subcomponent-purpose-version
+
 ### Gitops
 
 The repo is currently using Flux CD. I really like the mental model that Flux uses (its a beautiful design in my opinion). It solves many of my problems that I had with Argocd.
@@ -87,7 +92,6 @@ If the cluster installs trust-manager and sets up a trust bundle automatically, 
 
 | Install Order | Name                                      | Path                                                                | Depends On |
 | ------------- | ----------------------------------------- | ------------------------------------------------------------------- | ---------- |
-| 0             | namespaces-install                        | manifests/namespaces/install/overlays/lab                           | nothing |
 | 0             | nginx-gateway-fabric-pre-install          | manifests/nginx-gateway-fabric/pre-install/overlays/lab             | nothing |
 | 0             | cilium-install                            | manifests/cilium/install/overlays/lab                               | nothing |
 | 1             | cert-manager-install                      | manifests/cert-manager/install/overlays/lab                         | cilium-install |

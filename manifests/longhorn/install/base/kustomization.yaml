@@ -4,3 +4,4 @@ resources:
 - resources/replication-storage-class.yaml
 - resources/no-replication-storage-class.yaml
 - resources/source-controller.yaml
+- resources/namespace.yaml
