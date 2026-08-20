@@ -1,0 +1,16 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: openbao-server-routing-tlspolicy
+  namespace: openbao
+spec:
+  targetRefs:
+  - kind: Service
+    name: openbao-ui
+    group: ""
+  validation:
+    hostname: openbao.openbao.svc.cluster.local
+    caCertificateRefs:
+    - kind: ConfigMap
+      name: huntinternal-trustbundle
+      group: ""

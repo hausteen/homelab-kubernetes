@@ -1,0 +1,27 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-base
+  namespace: flux-system
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: base
+  targetNamespace: istio-system
+  chartRef:
+    kind: HelmChart
+    name: istio-base
+    namespace: flux-system

@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: coredns
+  namespace: flux-system
+spec:
+  chart: coredns
+  version: "1.46.x"
+  sourceRef:
+    kind: HelmRepository
+    name: coredns
+  interval: 24h
+  reconcileStrategy: ChartVersion

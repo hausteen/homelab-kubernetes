@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-ztunnel
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: istio-cni
+    namespace: flux-system
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Skip
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Skip
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: ztunnel
+  targetNamespace: istio-system
+  chartRef:
+    kind: HelmChart
+    name: istio-ztunnel
+    namespace: flux-system

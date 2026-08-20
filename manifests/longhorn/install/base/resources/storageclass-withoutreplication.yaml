@@ -1,0 +1,13 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: withoutreplication
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete # Retain
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  numberOfReplicas: "1" # this must be a string for now
+  dataLocality: strict-local
+  dataEngine: v1
+  fsType: ext4

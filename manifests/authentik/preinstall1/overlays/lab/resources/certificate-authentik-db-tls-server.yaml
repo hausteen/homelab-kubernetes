@@ -1,0 +1,41 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: authentik-db-tls-server
+  namespace: authentik
+spec:
+  secretName: authentik-db-tls-server
+  secretTemplate:
+    labels:
+      cnpg.io/reload: ""
+  issuerRef:
+    name: huntinternal
+    kind: ClusterIssuer
+    group: cert-manager.io
+  privateKey:
+    rotationPolicy: Always
+    algorithm: ECDSA
+    size: 256
+  isCA: false
+  subject:
+    countries:
+    - usa
+    organizations:
+    - hunt
+  dnsNames:
+  - authentik-db-rw
+  - authentik-db-rw.authentik
+  - authentik-db-rw.authentik.svc
+  - authentik-db-rw.authentik.svc.cluster.local
+  - authentik-db-r
+  - authentik-db-r.authentik
+  - authentik-db-r.authentik.svc
+  - authentik-db-r.authentik.svc.cluster.local
+  - authentik-db-ro
+  - authentik-db-ro.authentik
+  - authentik-db-ro.authentik.svc
+  - authentik-db-ro.authentik.svc.cluster.local
+  usages:
+  - server auth
+  duration: 720h # 30 days * 24 hours
+  renewBefore: 120h # 5 days before it ends. 5 days * 24 hours

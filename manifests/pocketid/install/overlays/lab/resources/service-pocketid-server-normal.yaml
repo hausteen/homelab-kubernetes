@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pocketid-server
+  namespace: pocket-id
+spec:
+  ports:
+    - port: 443
+      targetPort: 1411
+      protocol: TCP
+  ipFamilies:
+  - "IPv4"
+  selector:
+    app: pocketid

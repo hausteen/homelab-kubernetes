@@ -1,0 +1,34 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: trustmanager
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: cert-manager
+    namespace: flux-system
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Skip
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Skip
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: trustmanager
+  targetNamespace: trust-manager
+  chartRef:
+    kind: OCIRepository
+    name: trustmanager
+    namespace: flux-system
+  values:
+    app:
+      trust:
+        namespace: cert-manager

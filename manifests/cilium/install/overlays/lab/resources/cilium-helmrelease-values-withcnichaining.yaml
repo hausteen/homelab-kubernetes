@@ -1,0 +1,68 @@
+# this file is here simply for ease of copying into helmrelease.yaml
+cgroup:
+  autoMount:
+    enabled: false
+  hostRoot: /sys/fs/cgroup
+ipam:
+  mode: kubernetes
+kubeProxyReplacement: true
+kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
+securityContext:
+  capabilities:
+    ciliumAgent:
+    - CHOWN
+    - DAC_OVERRIDE
+    - FOWNER
+    - IPC_LOCK
+    - KILL
+    - NET_ADMIN
+    - NET_RAW
+    - SETGID
+    - SETUID
+    - SYS_ADMIN
+    - SYS_RESOURCE
+    cleanCiliumState:
+    - NET_ADMIN
+    - SYS_ADMIN
+    - SYS_RESOURCE
+k8sServiceHost: localhost
+k8sServicePort: 7445
+cluster:
+  name: cluster
+  id: 1
+encryption:
+  enabled: false
+  type: ztunnel
+gatewayAPI:
+  enabled: false
+l7Proxy: false
+hubble:
+  enabled: true
+  metrics:
+    enabled:
+    - dns
+    - drop
+    - flow
+    - http
+    - icmp
+    - tcp
+    - udp
+    - port-distribution
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+k8sClientRateLimit:
+  burst: 100
+  qps: 50 # services * (1 / leaseRenewDeadline)
+l2announcements:
+  enabled: true
+  leaseDuration: 8s
+  leaseRenewDeadline: 4s
+  leaseRetryPeriod: 2s
+bpf:
+  masquerade: false # not sure if cilium's ztunnel needs this set to false or true. istio needs this set to false
+socketLB:
+  hostNamespaceOnly: true
+cni:
+  exclusive: false

@@ -1,0 +1,41 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pocketid-db-tls-server
+  namespace: pocket-id
+spec:
+  secretName: pocketid-db-tls-server
+  secretTemplate:
+    labels:
+      cnpg.io/reload: ""
+  issuerRef:
+    name: huntinternal
+    kind: ClusterIssuer
+    group: cert-manager.io
+  privateKey:
+    rotationPolicy: Always
+    algorithm: ECDSA
+    size: 256
+  isCA: false
+  subject:
+    countries:
+    - usa
+    organizations:
+    - hunt
+  dnsNames:
+  - pocketid-db-rw
+  - pocketid-db-rw.pocket-id
+  - pocketid-db-rw.pocket-id.svc
+  - pocketid-db-rw.pocket-id.svc.cluster.local
+  - pocketid-db-r
+  - pocketid-db-r.pocket-id
+  - pocketid-db-r.pocket-id.svc
+  - pocketid-db-r.pocket-id.svc.cluster.local
+  - pocketid-db-ro
+  - pocketid-db-ro.pocket-id
+  - pocketid-db-ro.pocket-id.svc
+  - pocketid-db-ro.pocket-id.svc.cluster.local
+  usages:
+  - server auth
+  duration: 720h # 30 days * 24 hours
+  renewBefore: 120h # 5 days before it ends. 5 days * 24 hours

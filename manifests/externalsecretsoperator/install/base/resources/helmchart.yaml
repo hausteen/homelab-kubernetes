@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: externalsecretsoperator
+  namespace: flux-system
+spec:
+  chart: external-secrets
+  version: "2.5.x"
+  sourceRef:
+    kind: HelmRepository
+    name: externalsecretsoperator
+  interval: 24h
+  reconcileStrategy: ChartVersion

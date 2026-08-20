@@ -1,0 +1,45 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: clusteringress-frontdoor
+  namespace: gatewayapi
+spec:
+  gatewayClassName: ngf
+  infrastructure:
+    parametersRef:
+        group: gateway.nginx.org
+        kind: NginxProxy
+        name: clusteringress-frontdoor
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces:
+        from: All
+  - name: https
+    protocol: HTTPS
+    port: 443
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: clusteringress-frontdoor
+        namespace: gatewayapi
+        kind: Secret
+      options: # this section is specifically for nginx gateway fabric
+        nginx.org/ssl-protocols: TLSv1.3
+  - name: dns-udp
+    protocol: UDP
+    port: 53
+    allowedRoutes:
+      namespaces:
+        from: All
+  - name: dns-tcp
+    protocol: TCP
+    port: 53
+    allowedRoutes:
+      namespaces:
+        from: All

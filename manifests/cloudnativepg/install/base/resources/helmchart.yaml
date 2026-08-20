@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: cloudnativepg
+  namespace: flux-system
+spec:
+  chart: cloudnative-pg
+  version: "0.28.x"
+  sourceRef:
+    kind: HelmRepository
+    name: cloudnativepg
+  interval: 24h
+  reconcileStrategy: ChartVersion

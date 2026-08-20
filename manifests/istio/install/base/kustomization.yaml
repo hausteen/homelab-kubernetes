@@ -1,6 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- resources/source-controller.yaml
-- resources/helm-controller.yaml
 - resources/namespace.yaml
+- resources/helmrepository.yaml
+- resources/helmchart-istio-base.yaml
+- resources/helmchart-istio-istiod.yaml
+- resources/helmchart-istio-cni.yaml
+- resources/helmchart-istio-ztunnel.yaml
+- resources/helmrelease-istio-base.yaml
+- resources/helmrelease-istio-istiod.yaml
+- resources/helmrelease-istio-cni.yaml
+- resources/helmrelease-istio-ztunnel.yaml

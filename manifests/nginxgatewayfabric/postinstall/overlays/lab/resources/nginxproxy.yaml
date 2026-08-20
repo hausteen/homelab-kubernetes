@@ -1,0 +1,17 @@
+apiVersion: gateway.nginx.org/v1alpha2
+kind: NginxProxy
+metadata:
+  name: clusteringress-frontdoor
+  namespace: gatewayapi
+spec:
+  ipFamily: ipv4
+  kubernetes:
+    service:
+      externalTrafficPolicy: Cluster
+      patches:
+      - type: StrategicMerge
+        value:
+          metadata:
+            annotations:
+              lbipam.cilium.io/ips: 192.168.30.2
+              # metallb.io/loadBalancerIPs: 192.168.30.2

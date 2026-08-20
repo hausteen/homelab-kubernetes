@@ -1,0 +1,24 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: pocketid-server-routing-dashboard
+  namespace: pocket-id
+spec:
+  parentRefs:
+  - name: clusteringress-frontdoor
+    sectionName: https
+    namespace: gatewayapi
+    group: gateway.networking.k8s.io
+    kind: Gateway
+  hostnames:
+  - auth.hunt.internal
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: pocketid-server
+      port: 443
+      weight: 1
+      kind: Service

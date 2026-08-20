@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: UDPRoute
+metadata:
+  name: coredns
+  namespace: coredns
+spec:
+  parentRefs:
+  - name: clusteringress-frontdoor
+    sectionName: dns-udp
+    namespace: gatewayapi
+    group: gateway.networking.k8s.io
+    kind: Gateway
+  rules:
+  - backendRefs:
+    - name: coredns
+      port: 53
+      weight: 1
+      kind: Service

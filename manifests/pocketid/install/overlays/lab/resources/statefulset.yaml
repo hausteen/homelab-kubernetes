@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pocketid
+  namespace: pocket-id
+spec:
+  selector:
+    matchLabels:
+      app: pocketid
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  replicas: 1
+  serviceName: "pocketid-server-headless" # points to the headless service
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: pocketid
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: pocketid
+        image: ghcr.io/pocket-id/pocket-id:v2.13.0-distroless
+        ports:
+        - containerPort: 1411
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: pocketid-server
+        livenessProbe:
+          exec:
+            command:
+            - /app/pocket-id
+            - healthcheck
+          initialDelaySeconds: 10
+          periodSeconds: 90
+          timeoutSeconds: 5
+          failureThreshold: 2
+        readinessProbe:
+          exec:
+            command:
+            - /app/pocket-id
+            - healthcheck
+          initialDelaySeconds: 10
+          periodSeconds: 90
+          timeoutSeconds: 5
+          failureThreshold: 2
+        volumeMounts:
+        - name: secrets
+          mountPath: /app/secrets/
+          readOnly: false
+        - name: data-volume
+          mountPath: /app/data/
+          readOnly: false
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 2000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: secrets
+        projected:
+          sources:
+          - secret:
+              name: pocketid-server-encryptionkey
+          - secret:
+              name: pocketid-server-tls
+              items:
+              - key: tls.crt
+                path: tls.crt
+              - key: tls.key
+                path: tls.key
+          - configMap:
+              name: huntinternal-trustbundle
+              items:
+              - key: ca.crt
+                path: ca.crt
+  volumeClaimTemplates:
+  - metadata:
+      name: data-volume
+      namespace: pocket-id
+    spec:
+      storageClassName: withoutreplication
+      accessModes:
+        - ReadWriteOncePod
+      resources:
+        requests:
+          storage: 5Gi

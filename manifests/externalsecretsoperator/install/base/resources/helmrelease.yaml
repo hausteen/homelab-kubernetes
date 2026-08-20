@@ -1,0 +1,36 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: externalsecretsoperator
+  namespace: flux-system
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: externalsecretsoperator
+  targetNamespace: external-secrets
+  chartRef:
+    kind: HelmChart
+    name: externalsecretsoperator
+    namespace: flux-system
+  values:
+    log:
+      level: info
+    serviceAccount:
+      create: true
+      name: externalsecretsoperator
+    webhook:
+      extraArgs:
+        tls-min-version: "1.3"

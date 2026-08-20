@@ -1,0 +1,48 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: openbao-server-tls
+  namespace: openbao
+spec:
+  secretName: openbao-server-tls
+  issuerRef:
+    name: huntinternal
+    kind: ClusterIssuer
+    group: cert-manager.io
+  privateKey:
+    rotationPolicy: Always
+    algorithm: ECDSA
+    size: 256
+  isCA: false
+  subject:
+    countries:
+    - usa
+    organizations:
+    - hunt
+  dnsNames:
+  - openbao
+  - openbao.openbao
+  - openbao.openbao.svc
+  - openbao.openbao.svc.cluster.local
+  - openbao-internal
+  - openbao-internal.openbao
+  - openbao-internal.openbao.svc
+  - openbao-internal.openbao.svc.cluster.local
+  - openbao-0.openbao-internal
+  - openbao-0.openbao-internal.openbao
+  - openbao-0.openbao-internal.openbao.svc
+  - openbao-0.openbao-internal.openbao.svc.cluster.local
+  - openbao-1.openbao-internal
+  - openbao-1.openbao-internal.openbao
+  - openbao-1.openbao-internal.openbao.svc
+  - openbao-1.openbao-internal.openbao.svc.cluster.local
+  - openbao-2.openbao-internal
+  - openbao-2.openbao-internal.openbao
+  - openbao-2.openbao-internal.openbao.svc
+  - openbao-2.openbao-internal.openbao.svc.cluster.local
+  ipAddresses:
+  - 127.0.0.1
+  - "::1"
+  commonName: app
+  duration: 720h # 30 days * 24 hours
+  renewBefore: 120h # 5 days before it ends. 5 days * 24 hours

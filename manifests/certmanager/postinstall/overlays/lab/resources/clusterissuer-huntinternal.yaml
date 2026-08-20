@@ -1,0 +1,9 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: huntinternal
+spec:
+  ca:
+    secretName: huntinternal-certificateauthority
+    # `ClusterIssuer` resource is not namespaced, so `secretName` is assumed to be in the `cert-manager` namespace.
+# this is the root certificate authority for my whole cluster. there are no intermediate certificate authorities currently.

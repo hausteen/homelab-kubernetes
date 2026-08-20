@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: istio-base
+  namespace: flux-system
+spec:
+  chart: base
+  version: "1.29.x"
+  sourceRef:
+    kind: HelmRepository
+    name: istio
+  interval: 24h
+  reconcileStrategy: ChartVersion
