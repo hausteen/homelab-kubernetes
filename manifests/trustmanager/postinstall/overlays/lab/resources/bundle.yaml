@@ -21,11 +21,7 @@ spec:
       # this config map is created in every namespace
 
 # bootstrap process (steps 1-4 automated):
-# 1. opentofu creates a configmap called huntinternal-certificateauthority-previous with key "ca.crt" and value (a random tls.key). the value doesn't matter.
-# 2. cert-manager: creates the huntinternal-certificateauthority certificate and secret
-# 4. trust-manager: creates the trust bundle using the secret and configmap. (the key/value pairs will be different)
-# 5. human: after the cluster bootstrap is finished, follow the certificate rotation process so that both key/value pairs are the same.
-# 5.A. human: command: kubectl patch configmap huntinternal-certificateauthority-previous -n cert-manager -p "{\"data\":{\"ca.crt\":\"$(kubectl get secrets huntinternal-certificateauthority -n cert-manager -o jsonpath='{.data.ca\.crt}' | base64 --decode)\"}}"
+# a job in the cert-manager namespace creates a configmap called huntinternal-certificateauthority-previous with key "ca.crt". the value is the same as the huntinternal-certificateauthority ca.crt's value.
 
 # certificate rotation:
 # 1. cert-manager: creates the new huntinternal-certificateauthority certificate and secret automatically once the renew time comes

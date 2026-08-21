@@ -81,7 +81,7 @@ During cluster bootstrap, I install Flux Operator. I give it a Flux Instance fil
 
 Read the clusters/overlays/name/resources/kustomization.yaml file in order to see what is in each cluster. It should match the below tables for each cluster.
 
-If the cluster installs trust-manager and sets up a trust bundle automatically, you need to perform a certificate rotation after the bootstrap is done. The previous certificate is a dummy certificate to allow for automated bootstrapping. The command is in the trust bundle file found in trust-manager's folder.
+If the cluster installs trust-manager and sets up a trust bundle automatically, you need to perform a certificate rotation after the root certificate expires in 9.5 years. The command is in the trust bundle file found in trust-manager's folder.
 
 ## Installation
 
@@ -100,15 +100,16 @@ If the cluster installs trust-manager and sets up a trust bundle automatically, 
 | 1             | cloudnativepg-install                  | cloudnativepg/install                  | cilium-install |
 | 1             | cilium-postinstall1                    | cilium/postinstall1                    | cilium-install |
 | 2             | trustmanager-install                   | trustmanager/install                   | certmanager-install |
-| 2             | certmanager-postinstall                | certmanager/postinstall                | certmanager-install |
+| 2             | certmanager-postinstall1               | certmanager/postinstall1               | certmanager-install |
 | 2             | istio-postinstall                      | istio/postinstall                      | istio-install |
-| 3             | nginxgatewayfabric-postinstall         | nginxgatewayfabric/postinstall         | certmanager-postinstall, nginxgatewayfabric-install |
-| 4             | trustmanager-postinstall               | trustmanager/postinstall               | certmanager-postinstall, trustmanager-install |
+| 3             | certmanager-postinstall2               | certmanager/postinstall2               | certmanager-postinstall1 |
+| 3             | nginxgatewayfabric-postinstall         | nginxgatewayfabric/postinstall         | certmanager-postinstall1, nginxgatewayfabric-install |
+| 4             | trustmanager-postinstall               | trustmanager/postinstall               | certmanager-postinstall2, trustmanager-install |
 | 4             | coredns-postinstall                    | coredns/postinstall                    | coredns-install, nginxgatewayfabric-postinstall |
 | 4             | cilium-postinstall2                    | cilium/postinstall2                    | cilium-install, nginxgatewayfabric-postinstall |
 | 4             | longhorn-postinstall                   | longhorn/postinstall                   | longhorn-install, nginxgatewayfabric-postinstall |
-| 4             | openbao-preinstall1                    | openbao/preinstall1                    | certmanager-postinstall, trustmanager-postinstall, externalsecretsoperator-install |
-| 4             | pocketid-preinstall1                   | pocketid/preinstall1                   | certmanager-postinstall |
+| 4             | openbao-preinstall1                    | openbao/preinstall1                    | certmanager-postinstall1, trustmanager-postinstall, externalsecretsoperator-install |
+| 4             | pocketid-preinstall1                   | pocketid/preinstall1                   | certmanager-postinstall1 |
 | 5             | openbao-preinstall2                    | openbao/preinstall2                    | openbao-preinstall1, cloudnativepg-install, longhorn-install |
 | 5             | pocketid-preinstall2                   | pocketid/preinstall2                   | pocketid-preinstall1, cloudnativepg-install, longhorn-install |
 | 6             | openbao-install                        | openbao/install                        | openbao-preinstall2 |
