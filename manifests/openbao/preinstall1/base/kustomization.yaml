@@ -4,3 +4,6 @@ resources:
 - resources/namespace.yaml
 - resources/password-openbao-account.yaml # this is an eso password generator
 - resources/externalsecret.yaml
+- resources/role.yaml
+- resources/rolebinding.yaml
+- resources/job.yaml

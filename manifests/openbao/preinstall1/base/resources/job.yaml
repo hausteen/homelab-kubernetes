@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: openbao-server-unsealkey-creation
+  namespace: openbao
+spec:
+  template:
+    spec:
+      containers:
+      - name: kubectl
+        image: bitnami/kubectl:latest
+        command:
+        - "/bin/sh"
+        args:
+        - "-c"
+        - > # this takes the following lines and merges them together as a single line. this makes it readable. do NOT wrap it in ""
+          kubectl create secret generic openbao-server-unsealkey-previous --from-literal=previous-unseal.key=\"$(openssl rand 32)\"
+          &&
+          kubectl create secret generic openbao-server-unsealkey-current --from-literal=current-unseal.key=\"$(openssl rand 32)\"
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 2000
+        seccompProfile:
+          type: RuntimeDefault
+      restartPolicy: Never
+# goal: openbao needs 2 different random encryption keys (current and previous), which are each a 32 byte value.
+# method: 'openssl rand 32' gives us the random bytes

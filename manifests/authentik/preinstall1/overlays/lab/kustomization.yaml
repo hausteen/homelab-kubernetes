@@ -5,5 +5,3 @@ resources:
 - resources/certificate-authentik-server-tls.yaml
 - resources/certificate-authentik-db-tls-server.yaml
 - resources/certificate-authentik-db-tls-replication.yaml
-- resources/password-authentik-server-secretkey.yaml
-- resources/externalsecret.yaml

@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: authentik-server-secretkey-creation
+  namespace: authentik
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: authentik
+roleRef:
+  kind: Role
+  name: authentik-server-secretkey-creation
+  apiGroup: rbac.authorization.k8s.io
