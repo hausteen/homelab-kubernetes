@@ -6,4 +6,5 @@ resources:
 - resources/externalsecret.yaml
 - resources/role.yaml
 - resources/rolebinding.yaml
-- resources/job.yaml
+- resources/job-openbao-server-unsealkey-createprevious.yaml
+- resources/job-openbao-server-unsealkey-createcurrent.yaml

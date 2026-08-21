@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: openbao-server-unsealkey-createprevious
+  namespace: openbao
+spec:
+  template:
+    spec:
+      containers:
+      - name: kubectl
+        image: bitnami/kubectl:latest
+        command:
+        - "/bin/sh"
+        args:
+        - "-c"
+        - "kubectl create secret generic openbao-server-unsealkey-previous --from-literal=previous-unseal.key=\"$(openssl rand -base64 32)\""
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 2000
+        seccompProfile:
+          type: RuntimeDefault
+      restartPolicy: Never
+# goal: we need a random encryption key, which is simply a long random string.
+# method: 'openssl rand 32' gives us the random bytes, which we base64 encode, which results in a string.
+# when the kubernetes secret is created, our base64 string is base64 encoded again.
+# when the pod consumes the secret, the secret is decoded once, giving the pod our base64 encoded string.

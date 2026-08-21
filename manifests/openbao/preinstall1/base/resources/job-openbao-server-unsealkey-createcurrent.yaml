@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: openbao-server-unsealkey-creation
+  name: openbao-server-unsealkey-createcurrent
   namespace: openbao
 spec:
   template:
@@ -13,10 +13,7 @@ spec:
         - "/bin/sh"
         args:
         - "-c"
-        - > # this takes the following lines and merges them together as a single line. this makes it readable. do NOT wrap it in ""
-          kubectl create secret generic openbao-server-unsealkey-previous --from-literal=previous-unseal.key=\"$(openssl rand -base64 32)\"
-          &&
-          kubectl create secret generic openbao-server-unsealkey-current --from-literal=current-unseal.key=\"$(openssl rand -base64 32)\"
+        - "kubectl create secret generic openbao-server-unsealkey-current --from-literal=current-unseal.key=\"$(openssl rand -base64 32)\""
         securityContext:
           capabilities:
             drop:
@@ -31,7 +28,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       restartPolicy: Never
-# goal: we need 2 random encryption keys, where each is simply a long random string.
+# goal: we need a random encryption key, which is simply a long random string.
 # method: 'openssl rand 32' gives us the random bytes, which we base64 encode, which results in a string.
 # when the kubernetes secret is created, our base64 string is base64 encoded again.
 # when the pod consumes the secret, the secret is decoded once, giving the pod our base64 encoded string.
