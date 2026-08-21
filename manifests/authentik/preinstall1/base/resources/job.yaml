@@ -4,6 +4,7 @@ metadata:
   name: authentik-server-secretkey-creation
   namespace: authentik
 spec:
+  ttlSecondsAfterFinished: 30
   template:
     spec:
       containers:

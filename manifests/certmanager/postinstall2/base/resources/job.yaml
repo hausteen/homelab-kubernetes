@@ -4,6 +4,7 @@ metadata:
   name: huntinternal-certificateauthority-previous-creation
   namespace: cert-manager
 spec:
+  ttlSecondsAfterFinished: 30
   template:
     spec:
       containers:
