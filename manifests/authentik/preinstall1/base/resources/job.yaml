@@ -13,7 +13,7 @@ spec:
         - "/bin/sh"
         args:
         - "-c"
-        - "kubectl create secret generic authentik-server-secretkey --from-literal=secret-key=\"$(openssl rand 60 | base64 -w 0)\""
+        - "kubectl create secret generic authentik-server-secretkey --from-literal=secret-key=\"$(openssl rand -base64 32)\""
         securityContext:
           capabilities:
             drop:
@@ -28,7 +28,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       restartPolicy: Never
-# goal: authentik needs a random encryption key, which is simply a long random string.
-# method: 'openssl rand 60' gives us the random bytes, which we base64 encode, which results in a string.
+# goal: we need a random encryption key, which is simply a long random string.
+# method: 'openssl rand 32' gives us the random bytes, which we base64 encode, which results in a string.
 # when the kubernetes secret is created, our base64 string is base64 encoded again.
 # when the pod consumes the secret, the secret is decoded once, giving the pod our base64 encoded string.

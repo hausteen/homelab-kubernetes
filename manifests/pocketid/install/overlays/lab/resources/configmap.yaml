@@ -6,7 +6,7 @@ metadata:
 data:
   APP_URL: "https://auth.hunt.internal"
   INTERNAL_APP_URL: "https://pocketid-server.pocket-id.svc.cluster.local"
-  ENCRYPTION_KEY_FILE: "/app/secrets/encryption-key" # value will be output of: openssl rand -base64 32
+  ENCRYPTION_KEY_FILE: "/app/secrets/encryption-key"
   TLS_CERT_FILE: "/app/secrets/tls.crt"
   TLS_KEY_FILE: "/app/secrets/tls.key"
   DB_CONNECTION_STRING: "postgres://app@pocketid-db-rw.pocket-id.svc.cluster.local:5432/app?sslmode=verify-full&sslrootcert=/app/secrets/ca.crt&sslcert=/app/secrets/tls.crt&sslkey=/app/secrets/tls.key"
