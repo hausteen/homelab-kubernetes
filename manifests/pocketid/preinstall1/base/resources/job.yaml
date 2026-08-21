@@ -4,7 +4,6 @@ metadata:
   name: pocketid-server-encryptionkey-creation
   namespace: pocket-id
 spec:
-  ttlSecondsAfterFinished: 30
   template:
     spec:
       containers:
