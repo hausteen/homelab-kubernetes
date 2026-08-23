@@ -20,6 +20,19 @@ spec:
             - ALL
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
+      - name: kubectl
+        image: bitnami/kubectl:latest
+        command:
+        - "/bin/sh"
+        args:
+        - "-c"
+        - "kubectl create secret generic openbao-server-unsealkey-previous --from-literal=previous-unseal.key=\"$(openssl rand -base64 32)\""
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
