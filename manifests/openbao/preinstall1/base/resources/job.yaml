@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       containers:
-      - name: kubectl
+      - name: openbao-server-unsealkey-current
         image: bitnami/kubectl:latest
         command:
         - "/bin/sh"
@@ -20,7 +20,7 @@ spec:
             - ALL
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
-      - name: kubectl
+      - name: openbao-server-unsealkey-previous
         image: bitnami/kubectl:latest
         command:
         - "/bin/sh"
