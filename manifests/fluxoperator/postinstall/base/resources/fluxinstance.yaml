@@ -33,4 +33,4 @@ spec:
     path: "clusters/overlays/lab"
     interval: "1m"
     provider: github # authenticates using a github app.
-    pullSecret: "flux-github-app"
+    pullSecret: "flux-githubapp"
