@@ -89,8 +89,10 @@ If the cluster installs trust-manager and sets up a trust bundle automatically, 
 
 | Install Order | Name                                   | Path (manifests/.../overlays/lab)      | Depends On |
 | ------------- | -------------------------------------- | -------------------------------------- | ---------- |
-| 0             | nginxgatewayfabric-preinstall          | nginxgatewayfabric/preinstall          | nothing |
-| 0             | cilium-install                         | cilium/install                         | nothing |
+| -2            | fluxoperator-install                   | fluxoperator/install                   | nothing |
+| -1            | fluxoperator-postinstall               | fluxoperator/postinstall               | fluxoperator-install |
+| 0             | nginxgatewayfabric-preinstall          | nginxgatewayfabric/preinstall          | fluxoperator-postinstall |
+| 0             | cilium-install                         | cilium/install                         | fluxoperator-postinstall |
 | 1             | certmanager-install                    | certmanager/install                    | cilium-install |
 | 1             | longhorn-install                       | longhorn/install                       | cilium-install |
 | 1             | nginxgatewayfabric-install             | nginxgatewayfabric/install             | cilium-install, nginxgatewayfabric-preinstall |
