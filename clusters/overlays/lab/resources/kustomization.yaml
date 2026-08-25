@@ -583,7 +583,7 @@ spec:
   timeout: 5m
   prune: true
   wait: false # flux doesn't know how to monitor a cnpg cluster file correctly by default. trying manual health check definition.
-  healthchecks:
+  healthChecks:
   - apiVersion: postgresql.cnpg.io/v1
     kind: Cluster
     name: pocketid-db
