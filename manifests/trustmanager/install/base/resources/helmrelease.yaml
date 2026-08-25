@@ -4,9 +4,6 @@ metadata:
   name: trustmanager
   namespace: flux-system
 spec:
-  dependsOn:
-  - name: certmanager
-    namespace: flux-system
   interval: 15m
   timeout: 5m
   install:
