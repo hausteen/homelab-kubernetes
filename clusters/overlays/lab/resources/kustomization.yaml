@@ -585,26 +585,26 @@ spec:
   wait: true
   path: manifests/pocketid/preinstall2/overlays/lab
 ...
-# ---
-# apiVersion: kustomize.toolkit.fluxcd.io/v1
-# kind: Kustomization
-# metadata:
-#   name: pocketid-install
-#   namespace: flux-system
-# spec:
-#   dependsOn:
-#   - name: pocketid-preinstall2
-#     namespace: flux-system
-#   sourceRef:
-#     kind: GitRepository
-#     name: flux-system
-#     namespace: flux-system
-#   interval: 10m
-#   timeout: 5m
-#   prune: true
-#   wait: true
-#   path: manifests/pocketid/install/overlays/lab
-# ...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: pocketid-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: pocketid-preinstall2
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/pocketid/install/overlays/lab
+...
 # ---
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
 # kind: Kustomization
