@@ -106,15 +106,15 @@ If the cluster installs trust-manager and sets up a trust bundle automatically, 
 | 2             | istio-postinstall                      | istio/postinstall                      | istio-install |
 | 3             | certmanager-postinstall2               | certmanager/postinstall2               | certmanager-postinstall1 |
 | 3             | nginxgatewayfabric-postinstall         | nginxgatewayfabric/postinstall         | certmanager-postinstall1, nginxgatewayfabric-install |
+| 3             | pocketid-preinstall1                   | pocketid/preinstall1                   | certmanager-postinstall1 |
+| 3             | openbao-preinstall1                    | openbao/preinstall1                    | certmanager-postinstall1, externalsecretsoperator-install |
 | 4             | trustmanager-postinstall               | trustmanager/postinstall               | certmanager-postinstall2, trustmanager-install |
 | 4             | coredns-postinstall                    | coredns/postinstall                    | coredns-install, nginxgatewayfabric-postinstall |
 | 4             | cilium-postinstall2                    | cilium/postinstall2                    | cilium-install, nginxgatewayfabric-postinstall |
 | 4             | longhorn-postinstall                   | longhorn/postinstall                   | longhorn-install, nginxgatewayfabric-postinstall |
-| 4             | openbao-preinstall1                    | openbao/preinstall1                    | certmanager-postinstall1, trustmanager-postinstall, externalsecretsoperator-install |
-| 4             | pocketid-preinstall1                   | pocketid/preinstall1                   | certmanager-postinstall1 |
 | 5             | openbao-preinstall2                    | openbao/preinstall2                    | openbao-preinstall1, cloudnativepg-install, longhorn-install |
 | 5             | pocketid-preinstall2                   | pocketid/preinstall2                   | pocketid-preinstall1, cloudnativepg-install, longhorn-install |
-| 6             | openbao-install                        | openbao/install                        | openbao-preinstall2 |
+| 6             | openbao-install                        | openbao/install                        | openbao-preinstall2, trustmanager-postinstall |
 | 6             | pocketid-install                       | pocketid/install                       | pocketid-preinstall2 |
 | 7             | openbao-postinstall                    | openbao/postinstall                    | openbao-install, nginxgatewayfabric-postinstall |
 | 7             | pocketid-postinstall                   | pocketid/postinstall                   | pocketid-install, nginxgatewayfabric-postinstall |

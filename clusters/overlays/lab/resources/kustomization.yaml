@@ -437,8 +437,6 @@ spec:
   dependsOn:
   - name: certmanager-postinstall1
     namespace: flux-system
-  - name: trustmanager-postinstall
-    namespace: flux-system
   - name: externalsecretsoperator-install
     namespace: flux-system
   sourceRef:
@@ -484,6 +482,8 @@ metadata:
 spec:
   dependsOn:
   - name: openbao-preinstall2
+    namespace: flux-system
+  - name: trustmanager-postinstall
     namespace: flux-system
   sourceRef:
     kind: GitRepository

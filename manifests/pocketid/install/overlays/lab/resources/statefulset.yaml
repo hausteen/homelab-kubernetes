@@ -30,24 +30,33 @@ spec:
         envFrom:
         - configMapRef:
             name: pocketid-server
+        startupProbe:
+          exec:
+            command:
+            - /app/pocket-id
+            - healthcheck
+          initialDelaySeconds: 240 # 4 minutes
+          periodSeconds: 30
+          failureThreshold: 3
+          timeoutSeconds: 5
         livenessProbe:
           exec:
             command:
             - /app/pocket-id
             - healthcheck
-          initialDelaySeconds: 10
-          periodSeconds: 90
+          initialDelaySeconds: 240 # 4 minutes
+          periodSeconds: 10
+          failureThreshold: 5
           timeoutSeconds: 5
-          failureThreshold: 2
         readinessProbe:
           exec:
             command:
             - /app/pocket-id
             - healthcheck
-          initialDelaySeconds: 10
-          periodSeconds: 90
+          initialDelaySeconds: 240 # 4 minutes
+          periodSeconds: 10
+          failureThreshold: 3
           timeoutSeconds: 5
-          failureThreshold: 2
         volumeMounts:
         - name: secrets
           mountPath: /app/secrets/
