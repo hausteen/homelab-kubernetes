@@ -591,7 +591,7 @@ spec:
   healthCheckExprs:
   - apiVersion: postgresql.cnpg.io/v1
     kind: Cluster
-    current: has(status) && has(status.conditions) && status.conditions.exists(c, c.type == 'Ready' && c.status == 'True' && c.reason == 'ClusterIsReady')
+    current: has(status.conditions) && status.conditions.exists(c, c.type == 'Ready' && c.status == 'True' && c.reason == 'ClusterIsReady')
   path: manifests/pocketid/preinstall2/overlays/lab
 ...
 # ---
