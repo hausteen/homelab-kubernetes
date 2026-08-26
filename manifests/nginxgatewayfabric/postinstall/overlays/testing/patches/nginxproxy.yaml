@@ -1,0 +1,14 @@
+apiVersion: gateway.nginx.org/v1alpha2
+kind: NginxProxy
+metadata:
+  name: clusteringress-frontdoor
+  namespace: gatewayapi
+spec:
+  kubernetes:
+    service:
+      patches:
+      - type: StrategicMerge
+        value:
+          metadata:
+            annotations:
+              lbipam.cilium.io/ips: 192.168.30.3
