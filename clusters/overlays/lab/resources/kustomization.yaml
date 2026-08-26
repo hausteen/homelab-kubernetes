@@ -39,26 +39,6 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: nginxgatewayfabric-preinstall
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: fluxoperator-postinstall
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/nginxgatewayfabric/preinstall/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: cilium-install
   namespace: flux-system
 spec:
@@ -74,148 +54,6 @@ spec:
   prune: true
   wait: true
   path: manifests/cilium/install/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: certmanager-install
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: cilium-install
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/certmanager/install/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: longhorn-install
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: cilium-install
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/longhorn/install/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: nginxgatewayfabric-install
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: cilium-install
-    namespace: flux-system
-  - name: nginxgatewayfabric-preinstall
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/nginxgatewayfabric/install/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: coredns-install
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: cilium-install
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/coredns/install/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: istio-install
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: cilium-install
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/istio/install/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: externalsecretsoperator-install
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: cilium-install
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/externalsecretsoperator/install/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: cloudnativepg-install
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: cilium-install
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/cloudnativepg/install/overlays/lab
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -241,11 +79,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: trustmanager-install
+  name: cilium-postinstall2
   namespace: flux-system
 spec:
   dependsOn:
-  - name: certmanager-install
+  - name: cilium-install
+    namespace: flux-system
+  - name: nginxgatewayfabric-postinstall
     namespace: flux-system
   sourceRef:
     kind: GitRepository
@@ -255,7 +95,27 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/trustmanager/install/overlays/lab
+  path: manifests/cilium/postinstall2/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: certmanager-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: cilium-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/certmanager/install/overlays/lab
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -301,11 +161,11 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: istio-postinstall
+  name: trustmanager-install
   namespace: flux-system
 spec:
   dependsOn:
-  - name: istio-install
+  - name: certmanager-install
     namespace: flux-system
   sourceRef:
     kind: GitRepository
@@ -315,29 +175,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/istio/postinstall/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: nginxgatewayfabric-postinstall
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: certmanager-postinstall1
-    namespace: flux-system
-  - name: nginxgatewayfabric-install
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/nginxgatewayfabric/postinstall/overlays/lab
+  path: manifests/trustmanager/install/overlays/lab
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -365,36 +203,12 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: coredns-postinstall
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: coredns-install
-    namespace: flux-system
-  - name: nginxgatewayfabric-postinstall
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/coredns/postinstall/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: cilium-postinstall2
+  name: longhorn-install
   namespace: flux-system
 spec:
   dependsOn:
   - name: cilium-install
     namespace: flux-system
-  - name: nginxgatewayfabric-postinstall
-    namespace: flux-system
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -403,7 +217,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/cilium/postinstall2/overlays/lab
+  path: manifests/longhorn/install/overlays/lab
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -426,6 +240,216 @@ spec:
   prune: true
   wait: true
   path: manifests/longhorn/postinstall/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: nginxgatewayfabric-preinstall
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: fluxoperator-postinstall
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/nginxgatewayfabric/preinstall/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: nginxgatewayfabric-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: cilium-install
+    namespace: flux-system
+  - name: nginxgatewayfabric-preinstall
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/nginxgatewayfabric/install/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: nginxgatewayfabric-postinstall
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: certmanager-postinstall1
+    namespace: flux-system
+  - name: nginxgatewayfabric-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/nginxgatewayfabric/postinstall/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: coredns-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: cilium-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/coredns/install/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: coredns-postinstall
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: coredns-install
+    namespace: flux-system
+  - name: nginxgatewayfabric-postinstall
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/coredns/postinstall/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: istio-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: cilium-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/istio/install/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: istio-postinstall
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: istio-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/istio/postinstall/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cloudnativepg-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: cilium-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/cloudnativepg/install/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: externalsecretsoperator-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: cilium-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/externalsecretsoperator/install/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: externalsecretsoperator-postinstall
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: externalsecretsoperator-install
+    namespace: flux-system
+  - name: openbao-install
+    namespace: flux-system
+  - name: trustmanager-postinstall
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/externalsecretsoperator/postinstall/overlays/lab
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -525,30 +549,6 @@ spec:
   prune: true
   wait: true
   path: manifests/openbao/postinstall/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: externalsecretsoperator-postinstall
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: externalsecretsoperator-install
-    namespace: flux-system
-  - name: openbao-install
-    namespace: flux-system
-  - name: trustmanager-postinstall
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/externalsecretsoperator/postinstall/overlays/lab
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

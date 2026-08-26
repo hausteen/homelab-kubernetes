@@ -87,35 +87,35 @@ If the cluster installs trust-manager and sets up a trust bundle automatically, 
 
 ### For "clusters/overlays/lab":
 
-| Install Order | Name                                   | Path (manifests/.../overlays/lab)      | Depends On |
-| ------------- | -------------------------------------- | -------------------------------------- | ---------- |
-| -2            | fluxoperator-install                   | fluxoperator/install                   | nothing |
-| -1            | fluxoperator-postinstall               | fluxoperator/postinstall               | fluxoperator-install |
-| 0             | nginxgatewayfabric-preinstall          | nginxgatewayfabric/preinstall          | fluxoperator-postinstall |
-| 0             | cilium-install                         | cilium/install                         | fluxoperator-postinstall |
-| 1             | certmanager-install                    | certmanager/install                    | cilium-install |
-| 1             | longhorn-install                       | longhorn/install                       | cilium-install |
-| 1             | nginxgatewayfabric-install             | nginxgatewayfabric/install             | cilium-install, nginxgatewayfabric-preinstall |
-| 1             | coredns-install                        | coredns/install                        | cilium-install |
-| 1             | istio-install                          | istio/install                          | cilium-install |
-| 1             | externalsecretsoperator-install        | externalsecretsoperator/install        | cilium-install |
-| 1             | cloudnativepg-install                  | cloudnativepg/install                  | cilium-install |
-| 1             | cilium-postinstall1                    | cilium/postinstall1                    | cilium-install |
-| 2             | trustmanager-install                   | trustmanager/install                   | certmanager-install |
-| 2             | certmanager-postinstall1               | certmanager/postinstall1               | certmanager-install |
-| 2             | istio-postinstall                      | istio/postinstall                      | istio-install |
-| 3             | certmanager-postinstall2               | certmanager/postinstall2               | certmanager-postinstall1 |
-| 3             | nginxgatewayfabric-postinstall         | nginxgatewayfabric/postinstall         | certmanager-postinstall1, nginxgatewayfabric-install |
-| 3             | pocketid-preinstall1                   | pocketid/preinstall1                   | certmanager-postinstall1 |
-| 3             | openbao-preinstall1                    | openbao/preinstall1                    | certmanager-postinstall1, externalsecretsoperator-install |
-| 4             | trustmanager-postinstall               | trustmanager/postinstall               | certmanager-postinstall2, trustmanager-install |
-| 4             | coredns-postinstall                    | coredns/postinstall                    | coredns-install, nginxgatewayfabric-postinstall |
-| 4             | cilium-postinstall2                    | cilium/postinstall2                    | cilium-install, nginxgatewayfabric-postinstall |
-| 4             | longhorn-postinstall                   | longhorn/postinstall                   | longhorn-install, nginxgatewayfabric-postinstall |
-| 4             | openbao-preinstall2                    | openbao/preinstall2                    | openbao-preinstall1, cloudnativepg-install, longhorn-install |
-| 4             | pocketid-preinstall2                   | pocketid/preinstall2                   | pocketid-preinstall1, cloudnativepg-install, longhorn-install |
-| 5             | openbao-install                        | openbao/install                        | openbao-preinstall2, trustmanager-postinstall |
-| 5             | pocketid-install                       | pocketid/install                       | pocketid-preinstall2 |
-| 6             | openbao-postinstall                    | openbao/postinstall                    | openbao-install, nginxgatewayfabric-postinstall |
-| 6             | pocketid-postinstall                   | pocketid/postinstall                   | pocketid-install, nginxgatewayfabric-postinstall |
-| 6             | externalsecretsoperator-postinstall    | externalsecretsoperator/postinstall    | externalsecretsoperator-install, openbao-install, trustmanager-postinstall |
+| Name                                   | Path (manifests/.../overlays/lab)      | Depends On |
+| -------------------------------------- | -------------------------------------- | ---------- |
+| fluxoperator-install                   | fluxoperator/install                   | nothing |
+| fluxoperator-postinstall               | fluxoperator/postinstall               | fluxoperator-install |
+| cilium-install                         | cilium/install                         | fluxoperator-postinstall |
+| cilium-postinstall1                    | cilium/postinstall1                    | cilium-install |
+| cilium-postinstall2                    | cilium/postinstall2                    | cilium-install, nginxgatewayfabric-postinstall |
+| certmanager-install                    | certmanager/install                    | cilium-install |
+| certmanager-postinstall1               | certmanager/postinstall1               | certmanager-install |
+| certmanager-postinstall2               | certmanager/postinstall2               | certmanager-postinstall1 |
+| trustmanager-install                   | trustmanager/install                   | certmanager-install |
+| trustmanager-postinstall               | trustmanager/postinstall               | certmanager-postinstall2, trustmanager-install |
+| longhorn-install                       | longhorn/install                       | cilium-install |
+| longhorn-postinstall                   | longhorn/postinstall                   | longhorn-install, nginxgatewayfabric-postinstall |
+| nginxgatewayfabric-preinstall          | nginxgatewayfabric/preinstall          | fluxoperator-postinstall |
+| nginxgatewayfabric-install             | nginxgatewayfabric/install             | cilium-install, nginxgatewayfabric-preinstall |
+| nginxgatewayfabric-postinstall         | nginxgatewayfabric/postinstall         | certmanager-postinstall1, nginxgatewayfabric-install |
+| coredns-install                        | coredns/install                        | cilium-install |
+| coredns-postinstall                    | coredns/postinstall                    | coredns-install, nginxgatewayfabric-postinstall |
+| istio-install                          | istio/install                          | cilium-install |
+| istio-postinstall                      | istio/postinstall                      | istio-install |
+| cloudnativepg-install                  | cloudnativepg/install                  | cilium-install |
+| externalsecretsoperator-install        | externalsecretsoperator/install        | cilium-install |
+| externalsecretsoperator-postinstall    | externalsecretsoperator/postinstall    | externalsecretsoperator-install, openbao-install, trustmanager-postinstall |
+| openbao-preinstall1                    | openbao/preinstall1                    | certmanager-postinstall1, externalsecretsoperator-install |
+| openbao-preinstall2                    | openbao/preinstall2                    | openbao-preinstall1, cloudnativepg-install, longhorn-install |
+| openbao-install                        | openbao/install                        | openbao-preinstall2, trustmanager-postinstall |
+| openbao-postinstall                    | openbao/postinstall                    | openbao-install, nginxgatewayfabric-postinstall |
+| pocketid-preinstall1                   | pocketid/preinstall1                   | certmanager-postinstall1 |
+| pocketid-preinstall2                   | pocketid/preinstall2                   | pocketid-preinstall1, cloudnativepg-install, longhorn-install |
+| pocketid-install                       | pocketid/install                       | pocketid-preinstall2 |
+| pocketid-postinstall                   | pocketid/postinstall                   | pocketid-install, nginxgatewayfabric-postinstall |
