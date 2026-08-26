@@ -2,49 +2,9 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: fluxoperator-install
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/fluxoperator/install/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: fluxoperator-postinstall
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: fluxoperator-install
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/fluxoperator/postinstall/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: cilium-install
   namespace: flux-system
 spec:
-  dependsOn:
-  - name: fluxoperator-postinstall
-    namespace: flux-system
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -248,9 +208,6 @@ metadata:
   name: nginxgatewayfabric-preinstall
   namespace: flux-system
 spec:
-  dependsOn:
-  - name: fluxoperator-postinstall
-    namespace: flux-system
   sourceRef:
     kind: GitRepository
     name: flux-system
