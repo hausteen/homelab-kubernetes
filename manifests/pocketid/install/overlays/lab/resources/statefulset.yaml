@@ -51,7 +51,7 @@ spec:
         volumeMounts:
         - name: secrets
           mountPath: /app/secrets/
-          readOnly: false
+          readOnly: true
         - name: data-volume
           mountPath: /app/data/
           readOnly: false
