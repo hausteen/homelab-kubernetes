@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-corefile
+  namespace: coredns
+data: # the capital C is intentional
+  Corefile: |
+    testing.hunt.internal:53 {
+      auto {
+        directory /etc/coredns/ (.*hunt\.internal) {1}
+        reload 60s
+      }
+      errors
+      health :8080 {
+        lameduck 5s
+      }
+      loadbalance
+      log
+      ready :8081
+      reload
+    }

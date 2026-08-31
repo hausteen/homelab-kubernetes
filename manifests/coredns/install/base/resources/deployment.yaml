@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coredns
+  namespace: coredns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coredns
+  template:
+    metadata:
+      labels:
+        app: coredns
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsGroup: 65532
+        runAsUser: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: coredns
+        image: coredns/coredns:1.14.7
+        command:
+        - /coredns
+        args:
+        - -conf
+        - /etc/coredns/Corefile # the capital C is intentional
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+        ports:
+        - name: udp
+          containerPort: 53
+          protocol: UDP
+        - name: tcp
+          containerPort: 53
+          protocol: TCP
+        - name: health
+          containerPort: 8080
+          protocol: TCP
+        - name: ready
+          containerPort: 8181
+          protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /etc/coredns/
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 5
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      volumes:
+      - name: config
+        projected:
+          sources:
+          - configMap:
+              name: coredns-corefile
+          - configMap:
+              name: coredns-zonefile
+      - name: tmp
+        emptyDir:

@@ -11,4 +11,4 @@ spec:
         value:
           metadata:
             annotations:
-              lbipam.cilium.io/ips: 192.168.30.3
+              lbipam.cilium.io/ips: 192.168.30.4

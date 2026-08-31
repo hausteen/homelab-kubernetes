@@ -11,7 +11,7 @@ spec:
     group: gateway.networking.k8s.io
     kind: Gateway
   hostnames:
-  - openbao.hunt.internal
+  - openbao.lab.hunt.internal
   rules:
   - matches:
     - path:

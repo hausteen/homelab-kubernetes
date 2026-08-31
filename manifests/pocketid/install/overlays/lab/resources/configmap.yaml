@@ -4,7 +4,7 @@ metadata:
   name: pocketid-server
   namespace: pocket-id
 data:
-  APP_URL: "https://auth.hunt.internal"
+  APP_URL: "https://auth.lab.hunt.internal"
   INTERNAL_APP_URL: "https://pocketid-server.pocket-id.svc.cluster.local"
   ENCRYPTION_KEY_FILE: "/app/secrets/encryption-key"
   TLS_CERT_FILE: "/app/secrets/tls.crt"

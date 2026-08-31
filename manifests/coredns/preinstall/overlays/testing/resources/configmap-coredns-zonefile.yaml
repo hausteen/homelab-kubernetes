@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-zonefile
+  namespace: coredns
+data:
+  testing.hunt.internal: |
+    ; ------------------------------------------------------------------------------------------------------------------------------------------
+    ; zone file for: testing.hunt.internal.
+    ; note: .internal is reserved by icann for private use networks
+    ; format: rfc 1035 master file
+    ; a single record's structure = NAME TTL CLASS TYPE RDATA
+
+    ; ------------------------------------------------------------------------------------------------------------------------------------------
+    ; origin and default ttl (in seconds) for records without an explicit ttl
+    ; note: the origin is the base fqdn. a standalone @ symbol below is shorthand for the origin.
+    $ORIGIN testing.hunt.internal.
+    $TTL 3600
+
+    ; ------------------------------------------------------------------------------------------------------------------------------------------
+    ; SOA (start of authority) record. There is only 1 SOA.
+    @                               IN      SOA     ns1.testing.hunt.internal. hostmaster.testing.hunt.internal. (
+                                                    2026082702     ; serial (yyyymmddnn)  - coredns reloads the zone when this number changes
+                                                    7200           ; refresh              - 2 hours
+                                                    3600           ; update retry         - 1 hour
+                                                    14400          ; expiry               - 4 hours
+                                                    30             ; minimum ttl          - 1 hour
+                                                    )
+
+    ; ------------------------------------------------------------------------------------------------------------------------------------------
+    ; NS (name server) records
+    @                               IN      NS      ns1.testing.hunt.internal.
+
+    ; ------------------------------------------------------------------------------------------------------------------------------------------
+    ; A records
+    ; an A record is very important to have for NS records so don't delete it. it solves a chicken and egg problem.
+    ns1                             IN      A       192.168.30.4
+    longhorn                        IN      A       192.168.30.4
+    openbao                         IN      A       192.168.30.4
+    hubble                          IN      A       192.168.30.4
+    auth                            IN      A       192.168.30.4
+
+    ; ------------------------------------------------------------------------------------------------------------------------------------------
+    ; TXT records
+    ; @                               IN      TXT     "v=spf1 -all"
+    ; selector._domainkey             IN      TXT     "v=DKIM1;"
+    ; _dmarc                          IN      TXT     "v=DMARC1;"
+
+    ; ------------------------------------------------------------------------------------------------------------------------------------------
+    ; MX records
+    ; the rdata section has 2 values in it - a preference number and a mail server hostname
+    ; a MX record must point to a hostname which has an A or AAAA record
+    ; @                               IN      MX      10 mail
