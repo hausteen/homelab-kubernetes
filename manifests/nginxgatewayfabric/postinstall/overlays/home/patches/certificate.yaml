@@ -5,4 +5,4 @@ metadata:
   namespace: gatewayapi
 spec:
   dnsNames:
-  - "*.lab.hunt.internal"
+  - "*.home.hunt.internal"
