@@ -1,0 +1,36 @@
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcile: "enabled"
+    fluxcd.controlplane.io/reconcileEvery: "1h"
+    fluxcd.controlplane.io/reconcileArtifactEvery: "10m"
+    fluxcd.controlplane.io/reconcileTimeout: "5m"
+spec:
+  distribution:
+    version: "2.9.x"
+    registry: "ghcr.io/fluxcd"
+  components:
+  - source-controller
+  - kustomize-controller
+  - helm-controller
+  - notification-controller
+  - image-reflector-controller
+  - image-automation-controller
+  - source-watcher
+  cluster:
+    type: kubernetes
+    size: medium
+    multitenant: false
+    networkPolicy: true
+    domain: "cluster.local"
+  sync:
+    kind: GitRepository
+    url: "https://github.com/hausteen/homelab-kubernetes.git"
+    ref: "refs/heads/main"
+    path: "clusters/overlays/home"
+    interval: "1m"
+    provider: github # authenticates using a github app.
+    pullSecret: "flux-githubapp"
