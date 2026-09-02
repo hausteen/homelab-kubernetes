@@ -90,4 +90,4 @@ spec:
           - configMap:
               name: coredns-zonefile
       - name: tmp
-        emptyDir:
+        emptyDir: {}
