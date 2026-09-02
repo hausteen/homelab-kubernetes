@@ -206,6 +206,9 @@ metadata:
   name: nginxgatewayfabric-preinstall
   namespace: flux-system
 spec:
+  dependsOn:
+  - name: fluxoperator-postinstall
+    namespace: flux-system
   sourceRef:
     kind: GitRepository
     name: flux-system
