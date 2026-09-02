@@ -1,0 +1,32 @@
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: huntinternal-trustbundle
+  # this is a cluster scoped resource
+spec:
+  sources:
+  - useDefaultCAs: false
+  - secret:
+      name: huntinternal-certificateauthority
+      key: ca.crt
+      # this must be in the "trust" namespace, which is defined in the trust-manager helm chart values
+  - configMap:
+      name: huntinternal-certificateauthority-previous
+      key: ca.crt
+      # this must be in the "trust" namespace, which is defined in the trust-manager helm chart values
+  target:
+    configMap:
+      key: ca.crt
+      # name: matches the metadata.name
+      # this config map is created in every namespace
+
+# bootstrap process (steps 1-4 automated):
+# a job in the cert-manager namespace creates a configmap called huntinternal-certificateauthority-previous with key "ca.crt". the value is the same as the huntinternal-certificateauthority ca.crt's value.
+
+# certificate rotation:
+# 1. cert-manager: creates the new huntinternal-certificateauthority certificate and secret automatically once the renew time comes
+# 2. trust-manager: updates the trust bundle with the new key/value pair. (the key/value pairs will no longer be identical in the trust bundle)
+# 3. human: monitors the environment and updates the various applications to use the updated trust bundle.
+# 4. human: once all applications are updated and using the new trust bundle, the human updates huntinternal-certificateauthority-previous to have the same key/value pair as huntinternal-certificateauthority.
+# 4.A. human: command: kubectl patch configmap huntinternal-certificateauthority-previous -n cert-manager -p "{\"data\":{\"ca.crt\":\"$(kubectl get secrets huntinternal-certificateauthority -n cert-manager -o jsonpath='{.data.ca\.crt}' | base64 --decode)\"}}"
+# 5. trust-manager: updates the trust bundle. (both key/value pairs should be identical)

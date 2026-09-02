@@ -1,0 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources/issuer-selfsigned.yaml
+- resources/certificate-huntinternal.yaml
+- resources/clusterissuer-huntinternal.yaml

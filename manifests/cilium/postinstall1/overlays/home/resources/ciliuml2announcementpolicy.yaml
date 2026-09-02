@@ -1,0 +1,13 @@
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: cilium-workernode-announcement
+spec:
+  interfaces:
+  - ^eth[0-9]+
+  loadBalancerIPs: true
+  nodeSelector: # only run on worker nodes
+    matchExpressions:
+    - key: node-role.kubernetes.io/control-plane
+      operator: DoesNotExist
+  # announces all services by not putting in a service selector

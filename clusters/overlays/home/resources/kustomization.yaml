@@ -13,7 +13,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/cilium/install/overlays/lab
+  path: manifests/cilium/install/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -33,7 +33,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/cilium/postinstall1/overlays/lab
+  path: manifests/cilium/postinstall1/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -55,7 +55,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/cilium/postinstall2/overlays/lab
+  path: manifests/cilium/postinstall2/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -75,7 +75,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/certmanager/install/overlays/lab
+  path: manifests/certmanager/install/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -95,7 +95,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/certmanager/postinstall1/overlays/lab
+  path: manifests/certmanager/postinstall1/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -115,7 +115,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/certmanager/postinstall2/overlays/lab
+  path: manifests/certmanager/postinstall2/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -135,7 +135,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/trustmanager/install/overlays/lab
+  path: manifests/trustmanager/install/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -157,49 +157,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/trustmanager/postinstall/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: longhorn-install
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: cilium-install
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/longhorn/install/overlays/lab
-...
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: longhorn-postinstall
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: longhorn-install
-    namespace: flux-system
-  - name: nginxgatewayfabric-postinstall
-    namespace: flux-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 10m
-  timeout: 5m
-  prune: true
-  wait: true
-  path: manifests/longhorn/postinstall/overlays/lab
+  path: manifests/trustmanager/postinstall/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -216,7 +174,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/nginxgatewayfabric/preinstall/overlays/lab
+  path: manifests/nginxgatewayfabric/preinstall/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -238,7 +196,7 @@ spec:
   timeout: 5m
   prune: true
   wait: true
-  path: manifests/nginxgatewayfabric/install/overlays/lab
+  path: manifests/nginxgatewayfabric/install/overlays/home
 ...
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

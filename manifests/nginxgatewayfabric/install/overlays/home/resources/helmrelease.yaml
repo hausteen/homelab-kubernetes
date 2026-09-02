@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nginxgatewayfabric
+  namespace: flux-system
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: nginxgatewayfabric
+  targetNamespace: nginx-gateway-fabric
+  chartRef:
+    kind: OCIRepository
+    name: nginxgatewayfabric
+    namespace: flux-system
+  values:
+    nginxGateway:
+      config:
+        logging:
+          level: info
+      productTelemetry:
+        enable: false
+      gwAPIExperimentalFeatures:
+        enable: true
+      gatewayClassName: ngf
+      replicas: 1
+    nginx:
+      replicas: 2
+      service:
+        externalTrafficPolicy: Cluster
+      config:
+        logging:
+          agentLevel: info
+          errorLevel: info
+      debug: false
