@@ -120,6 +120,7 @@ If the cluster installs trust-manager and sets up a trust bundle automatically, 
 | pocketid-preinstall2                   | pocketid/preinstall2                   | pocketid-preinstall1, cloudnativepg-install, longhorn-install |
 | pocketid-install                       | pocketid/install                       | pocketid-preinstall2 |
 | pocketid-postinstall                   | pocketid/postinstall                   | pocketid-install, nginxgatewayfabric-postinstall |
+| kubebench-install                      | kubebench/install                      | cilium-install (technically all other software. runs as daily cronjob) |
 
 ### For "clusters/overlays/home":
 
