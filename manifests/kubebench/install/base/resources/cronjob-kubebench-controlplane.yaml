@@ -12,6 +12,7 @@ spec:
       template:
         spec:
           hostPID: true
+          restartPolicy: OnFailure
           nodeSelector:
             node-role.kubernetes.io/control-plane: ""
           tolerations:

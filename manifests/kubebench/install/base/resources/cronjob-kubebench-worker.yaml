@@ -12,6 +12,7 @@ spec:
       template:
         spec:
           hostPID: true
+          restartPolicy: OnFailure
           containers:
           - name: kube-bench
             image: aquasec/kube-bench:latest
