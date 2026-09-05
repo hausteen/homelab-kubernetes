@@ -6,13 +6,13 @@ metadata:
 spec:
   schedule: "0 0 * * *"
   successfulJobsHistoryLimit: 1
-  jobtemplate:
+  jobTemplate:
     spec:
       backoffLimit: 0
       template:
         spec:
           hostPID: true
-          restartPolicy: OnFailure
+          restartPolicy: Never
           containers:
           - name: kube-bench
             image: aquasec/kube-bench:latest
