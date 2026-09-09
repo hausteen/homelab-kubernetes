@@ -7,7 +7,7 @@ data: # the capital C is intentional
   Corefile: |
     testing.hunt.internal:53 {
       auto {
-        directory /etc/coredns/ (.*hunt\.internal) {1}
+        directory /etc/coredns/ ^(.*hunt\.internal)$ {1}
         reload 60s
       }
       errors
