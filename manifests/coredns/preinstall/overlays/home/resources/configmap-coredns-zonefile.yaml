@@ -20,7 +20,7 @@ data:
     ; ------------------------------------------------------------------------------------------------------------------------------------------
     ; SOA (start of authority) record. There is only 1 SOA.
     @                               IN      SOA     ns1.home.hunt.internal. hostmaster.home.hunt.internal. (
-                                                    2026082702     ; serial (yyyymmddnn)  - coredns reloads the zone when this number changes
+                                                    2026082701     ; serial (yyyymmddnn)  - coredns reloads the zone when this number changes
                                                     7200           ; refresh              - 2 hours
                                                     3600           ; update retry         - 1 hour
                                                     14400          ; expiry               - 4 hours
@@ -35,10 +35,7 @@ data:
     ; A records
     ; an A record is very important to have for NS records so don't delete it. it solves a chicken and egg problem.
     ns1                             IN      A       192.168.30.2
-    longhorn                        IN      A       192.168.30.2
-    openbao                         IN      A       192.168.30.2
     hubble                          IN      A       192.168.30.2
-    auth                            IN      A       192.168.30.2
 
     ; ------------------------------------------------------------------------------------------------------------------------------------------
     ; TXT records

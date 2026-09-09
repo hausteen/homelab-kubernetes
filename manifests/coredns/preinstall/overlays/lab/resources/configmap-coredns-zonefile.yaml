@@ -35,12 +35,11 @@ data:
     ; A records
     ; an A record is very important to have for NS records so don't delete it. it solves a chicken and egg problem.
     ns1                             IN      A       192.168.30.3
+    hubble                          IN      A       192.168.30.3
     longhorn                        IN      A       192.168.30.3
     openbao                         IN      A       192.168.30.3
-    hubble                          IN      A       192.168.30.3
     auth                            IN      A       192.168.30.3
     headlamp                        IN      A       192.168.30.3
-    dummytest                       IN      A       192.168.30.3
 
     ; ------------------------------------------------------------------------------------------------------------------------------------------
     ; TXT records

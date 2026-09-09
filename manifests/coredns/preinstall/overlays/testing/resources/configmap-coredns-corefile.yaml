@@ -6,9 +6,9 @@ metadata:
 data: # the capital C is intentional
   Corefile: |
     testing.hunt.internal:53 {
-      auto {
-        directory /etc/coredns/zone/ ^(.*hunt\.internal)$ {1}
+      file /etc/coredns/zone/testing.hunt.internal {
         reload 60s
+        reload_by_mtime
       }
       errors
       health :8080 {

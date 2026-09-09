@@ -16,9 +16,9 @@ data: # the capital C is intentional
       log
     }
     home.hunt.internal:53 {
-      auto {
-        directory /etc/coredns/zone/ ^(.*hunt\.internal)$ {1}
+      file /etc/coredns/zone/home.hunt.internal {
         reload 60s
+        reload_by_mtime
       }
       errors
       health :8080 {
