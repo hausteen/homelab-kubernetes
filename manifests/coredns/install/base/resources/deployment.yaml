@@ -28,7 +28,7 @@ spec:
         - /coredns
         args:
         - -conf
-        - /etc/coredns/Corefile # the capital C is intentional
+        - /etc/coredns/core/Corefile # the capital C is intentional
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -50,9 +50,12 @@ spec:
         - name: ready
           containerPort: 8181
           protocol: TCP
-        volumeMounts:
-        - name: config
-          mountPath: /etc/coredns/
+        volumeMounts: # each volume mount must have a unique mount location. no nesting them.
+        - name: corefile
+          mountPath: /etc/coredns/core/
+          readOnly: true
+        - name: zonefile
+          mountPath: /etc/coredns/zone/
           readOnly: true
         - name: tmp
           mountPath: /tmp
@@ -82,12 +85,11 @@ spec:
             cpu: 100m
             memory: 128Mi
       volumes:
-      - name: config
-        projected:
-          sources:
-          - configMap:
-              name: coredns-corefile
-          - configMap:
-              name: coredns-zonefile
+      - name: corefile
+        configMap:
+          name: coredns-corefile
+      - name: zonefile
+        configMap:
+          name: coredns-zonefile
       - name: tmp
         emptyDir: {}
