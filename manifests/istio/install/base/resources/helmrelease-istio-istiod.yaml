@@ -32,3 +32,4 @@ spec:
     profile: ambient
     seccompProfile:
       type: RuntimeDefault
+    autoscaleEnabled: false
