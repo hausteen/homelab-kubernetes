@@ -48,7 +48,7 @@ spec:
           containerPort: 8080
           protocol: TCP
         - name: ready
-          containerPort: 8181
+          containerPort: 8081
           protocol: TCP
         volumeMounts: # each volume mount must have a unique mount location. no nesting them.
         - name: corefile
