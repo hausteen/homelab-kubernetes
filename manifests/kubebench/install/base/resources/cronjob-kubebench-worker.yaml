@@ -11,7 +11,7 @@ spec:
       backoffLimit: 0
       template:
         spec:
-          hostPID: true
+          hostPID: true # i don't like this but kube-bench requires this to work
           restartPolicy: Never
           containers:
           - name: kube-bench
