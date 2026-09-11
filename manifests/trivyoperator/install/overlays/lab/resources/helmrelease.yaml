@@ -1,0 +1,105 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: trivyoperator
+  namespace: flux-system
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: trivyoperator
+  targetNamespace: trivy-system
+  chartRef:
+    kind: HelmChart
+    name: trivyoperator
+    namespace: flux-system
+  values:
+    targetNamespaces: ""
+    excludeNamespaces: ""
+    targetWorkloads: ""
+    operator:
+      builtInTrivyServer: true # this downloads trivy-server and runs it as a service. it allows all jobs to use this trivy-server db for vuln data.
+      builtInServerRegistryInsecure: false
+      revisionHistoryLimit: 2
+      scanJobTimeout: "10m"
+      scanJobTTL: "10m"
+      scanSecretTTL: "10m"
+      scannerReportTTL: "24h"
+      cacheReportTTL: "120h"
+      scanJobsConcurrentLimit: 1
+      accessGlobalSecretsAndServiceAccount: false
+      vulnerabilityScannerEnabled: true
+      sbomGenerationEnabled: true
+      configAuditScannerEnabled: true
+      rbacAssessmentScannerEnabled: false
+      infraAssessmentScannerEnabled: false
+      exposedSecretScannerEnabled: false
+      clusterComplianceEnabled: false
+    trivyOperator:
+      scanJobPodTemplatePodSecurityContext: # for the scanner pods
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        runAsNonRoot: true
+      scanJobPodTemplateContainerSecurityContext: # for the scanner pods
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        seccompProfile:
+          type: RuntimeDefault
+    trivy:
+      # mode: ClientServer # this is redundant due to operator.builtInTrivyServer controlling it
+      # serverURL: "http://trivy-server.trivy-system.svc.cluster.local:4975" # this is redundant due to operator.builtInTrivyServer controlling it
+      ignoreUnfixed: false
+      severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+      supportedConfigAuditKinds: "Workload,Service,Role,ClusterRole,NetworkPolicy,Ingress,LimitRange,ResourceQuota,PersistentVolume,PersistentVolumeClaim"
+      storageClassEnabled: true
+      storageClassName: withreplication
+      storageSize: "5Gi"
+      slow: false # this option is now deprecated in the main container. leave it as false. "parrallel 1" is the replacement
+      server:
+        podSecurityContext: # this is for trivy-server
+          runAsUser: 65534
+          runAsGroup: 65534
+          fsGroup: 65534
+          runAsNonRoot: true
+        securityContext: # this is for trivy-server
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+    nodeCollector:
+      enabled: false # its not documented but it works...
+    podSecurityContext: # this is for the main operator
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+      runAsNonRoot: true
+    securityContext: # this is for the main operator
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: true
+      seccompProfile:
+        type: RuntimeDefault

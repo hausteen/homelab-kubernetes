@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: trivyoperator
+  namespace: flux-system
+spec:
+  chart: trivy-operator
+  version: "0.36.x"
+  sourceRef:
+    kind: HelmRepository
+    name: aquasecurity
+  interval: 24h
+  reconcileStrategy: ChartVersion
