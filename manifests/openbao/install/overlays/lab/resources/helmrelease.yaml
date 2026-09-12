@@ -263,6 +263,17 @@ spec:
                 audience = "openbao"
               }
             }
+            request "role-oidc-create-superuser" {
+              operation = "update"
+              path = "auth/oidc/role/superuser"
+              data = {
+                role_type = "oidc"
+                user_claim = "sub"
+                policies = "superuser"
+                oidc_scopes = "profile,email"
+                allowed_redirect_uris = "https://openbao.lab.hunt.internal/v1/auth/oidc/callback,https://openbao.lab.hunt.internal/ui/vault/auth/oidc/oidc/callback,http://localhost:8250/oidc/callback"
+              }
+            }
           }
           seal "static" {
             current_key_id = "current"
