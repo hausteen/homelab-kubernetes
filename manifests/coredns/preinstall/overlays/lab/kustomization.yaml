@@ -4,3 +4,4 @@ resources:
 - ../../base
 - resources/configmap-coredns-corefile.yaml
 - resources/configmap-coredns-zonefile.yaml
+- resources/configmap-clusterwidecoredns-corefile.yaml

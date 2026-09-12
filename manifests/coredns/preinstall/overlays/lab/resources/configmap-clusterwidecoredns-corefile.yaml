@@ -1,0 +1,41 @@
+# this is going to modify the cluster wide default coredns install intentionally.
+# i want the whole cluster to know how to resolve the custom domain i have.
+# the filename is intentional as well.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
+data: # the capital C is intentional
+  Corefile: |
+    lab.hunt.internal:53 {
+      errors
+      forward . 192.168.30.3
+      log
+    }
+    .:53 {
+      errors
+      health {
+        lameduck 5s
+      }
+      ready
+      log . {
+        class error
+      }
+      prometheus :9153
+      kubernetes cluster.local in-addr.arpa ip6.arpa {
+        pods insecure
+        fallthrough in-addr.arpa ip6.arpa
+        ttl 30
+      }
+      forward . /etc/resolv.conf {
+        max_concurrent 1000
+      }
+      cache 30 {
+        disable success cluster.local
+        disable denial cluster.local
+      }
+      loop
+      reload
+      loadbalance
+    }
