@@ -8,8 +8,8 @@ metadata:
   namespace: kube-system
 data: # the capital C is intentional
   Corefile: |
-    lab.hunt.internal {
-      forward . 192.168.30.3
+    testing.hunt.internal {
+      forward . 192.168.30.4
       errors
       loadbalance
       log
