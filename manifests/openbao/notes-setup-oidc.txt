@@ -1,0 +1,27 @@
+To setup oidc connector for openbao:
+Download the huntinternal certificate authority certificate from within the cluster.
+    k kubeconfig get cm huntinternal-trustbundle -n trust-manager -o jsonpath="{.data.ca\.crt}" > ~/Downloads/ca.crt
+Download the openbao admin password from within the cluster.
+    k kubeconfig get secrets openbao-account-adminpassword -n openbao -o jsonpath="{.data.admin-password\.txt}" | base64 -d > ~/Downloads/openbao-account-adminpassword.txt
+
+Log into openbao as 'admin' and use the password in the txt file you downloaded.
+Go to the auth methods and click on oidc.
+Click configure in the top right to open the configure oidc page.
+Fill in:
+    oidc discovery url = https://auth.lab.hunt.internal    do not include -> /.well-known/openid-configuration
+    default role = set something here according to the openbao roles you have configured. readonly would be a good option.
+    oidc client id = set it to what the identity provider gave you
+    oidc secret = set it to what the identity provider gave you
+    oidc discovery ca pem = upload the ca.crt you downloaded or copy the content in.
+
+Log into the identity provider.
+Create a new oidc client.
+Fill in:
+    name = openbao
+    client launch url = https://openbao.lab.hunt.internal/ui/vault/auth?with=oidc
+    callback urls =
+        https://openbao.lab.hunt.internal/ui/vault/auth/oidc/oidc/callback
+        https://openbao.lab.hunt.internal/v1/auth/oidc/callback
+        http://localhost:8250/oidc/callback
+    pkce = enable it
+    logout callback url = there is no support for it right now
