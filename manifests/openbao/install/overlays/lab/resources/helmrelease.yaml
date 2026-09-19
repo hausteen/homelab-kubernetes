@@ -123,7 +123,7 @@ spec:
             ##############################
             ########## Policies ##########
             ##############################
-            request "policy-acl-create-superuser" {
+            request "create-superuser-policy" {
               operation = "update"
               path = "sys/policies/acl/superuser"
               data = {
@@ -134,7 +134,7 @@ spec:
                   END
               }
             }
-            request "policy-acl-create-kv1-rw" {
+            request "create-kv1-rw-policy" {
               operation = "update"
               path = "sys/policies/acl/kv1-rw"
               data = {
@@ -145,7 +145,7 @@ spec:
                   END
               }
             }
-            # request "policy-password-create-long-complex-password" {
+            # request "create-long-complex-password-policy" {
             #   operation = "update"
             #   path = "sys/policies/password/long-complex-password"
             #   data = {
@@ -173,7 +173,7 @@ spec:
             #####################################
             ########## Secrets engines ##########
             #####################################
-            request "secrets-engine-enable-kv-version1" {
+            request "enable-kv-v1-secrets-engine" {
               operation = "update"
               path = "sys/mounts/secret"
               data = {
@@ -186,7 +186,7 @@ spec:
             ##################################
             ########## Auth methods ##########
             ##################################
-            request "auth-method-tune-token" {
+            request "configure-token-auth-method" {
               operation = "update"
               path = "sys/auth/token/tune"
               data = {
@@ -194,7 +194,7 @@ spec:
                 max_lease_ttl = 86400 # 24h
               }
             }
-            request "auth-method-enable-userpass" {
+            request "enable-userpass-auth-method" {
               operation = "update"
               path = "sys/auth/userpass"
               data = {
@@ -205,7 +205,7 @@ spec:
                 }
               }
             }
-            request "auth-method-enable-kubernetes" {
+            request "enable-kubernetes-auth-method" {
               operation = "update"
               path = "sys/auth/kubernetes"
               data = {
@@ -216,7 +216,7 @@ spec:
                 }
               }
             }
-            request "auth-method-enable-oidc" {
+            request "enable-oidc-auth-method" {
               operation = "update"
               path = "sys/auth/oidc"
               data = {
@@ -230,7 +230,7 @@ spec:
             ##############################
             ########## Userpass ##########
             ##############################
-            request "userpass-create-admin" {
+            request "create-admin-account-using-userpass-auth-method" {
               operation = "update"
               path = "auth/userpass/users/admin"
               data = {
@@ -245,14 +245,17 @@ spec:
             ################################
             ########## Kubernetes ##########
             ################################
-            request "auth-method-configure-kubernetes" {
+            request "configure-kubernetes-auth-method" {
               operation = "update"
               path = "auth/kubernetes/config"
               data = {
                 kubernetes_host = "https://kubernetes.default.svc:443"
               }
             }
-            request "role-kubernetes-create-kv1-rw" {
+            ################################
+            ########## Roles ##########
+            ################################
+            request "create-kv1-rw-kubernetes-role" {
               operation = "update"
               path = "auth/kubernetes/role/kv1-rw"
               data = {
@@ -263,12 +266,12 @@ spec:
                 audience = "openbao"
               }
             }
-            request "role-oidc-create-superuser" {
+            request "create-superuser-oidc-role" {
               operation = "update"
               path = "auth/oidc/role/superuser"
               data = {
                 role_type = "oidc"
-                user_claim = "sub"
+                user_claim = "name"
                 policies = "superuser"
                 oidc_scopes = "profile,email"
                 allowed_redirect_uris = "https://openbao.lab.hunt.internal/v1/auth/oidc/callback,https://openbao.lab.hunt.internal/ui/vault/auth/oidc/oidc/callback,http://localhost:8250/oidc/callback"
