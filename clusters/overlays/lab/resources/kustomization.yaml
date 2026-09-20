@@ -687,6 +687,66 @@ spec:
   wait: true
   path: manifests/trivyoperator/install/overlays/lab
 ...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: headlamp-preinstall
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: certmanager-postinstall1
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/headlamp/preinstall/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: headlamp-install
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: headlamp-preinstall
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/headlamp/install/overlays/lab
+...
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: headlamp-postinstall
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: headlamp-install
+    namespace: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 10m
+  timeout: 5m
+  prune: true
+  wait: true
+  path: manifests/headlamp/postinstall/overlays/lab
+...
 # ---
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
 # kind: Kustomization
