@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: externalsecretsoperator
-  namespace: flux-system
+  namespace: external-secrets
 spec:
   chart: external-secrets
   version: "2.5.x"

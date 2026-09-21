@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: authentik
-  namespace: flux-system
+  namespace: authentik
 spec:
   chart: authentik
   version: "2026.5.x"

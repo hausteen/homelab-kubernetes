@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: headlamp
-  namespace: flux-system
+  namespace: headlamp
 spec:
   chart: headlamp
   version: "0.45.x"

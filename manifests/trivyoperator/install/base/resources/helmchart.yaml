@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: trivyoperator
-  namespace: flux-system
+  namespace: trivy-system
 spec:
   chart: trivy-operator
   version: "0.36.x"

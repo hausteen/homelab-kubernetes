@@ -2,11 +2,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: istio-istiod
-  namespace: flux-system
+  namespace: istio-system
 spec:
   dependsOn:
   - name: istio-base
-    namespace: flux-system
+    namespace: istio-system
   interval: 15m
   timeout: 5m
   install:
@@ -27,7 +27,7 @@ spec:
   chartRef:
     kind: HelmChart
     name: istio-istiod
-    namespace: flux-system
+    namespace: istio-system
   values:
     profile: ambient
     seccompProfile:

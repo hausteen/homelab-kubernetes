@@ -24,7 +24,7 @@ spec:
   chartRef:
     kind: HelmChart
     name: authentik
-    namespace: flux-system
+    namespace: authentik
   values:
     global:
       securityContext: # pod level

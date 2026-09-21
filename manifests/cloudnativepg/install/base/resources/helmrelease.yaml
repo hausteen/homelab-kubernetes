@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: cloudnativepg
-  namespace: flux-system
+  namespace: cnpg-system
 spec:
   interval: 15m
   timeout: 5m
@@ -24,7 +24,7 @@ spec:
   chartRef:
     kind: HelmChart
     name: cloudnativepg
-    namespace: flux-system
+    namespace: cnpg-system
   values:
     config:
       clusterWide: true

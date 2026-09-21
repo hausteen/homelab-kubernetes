@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: certmanager
-  namespace: flux-system
+  namespace: cert-manager
 spec:
   interval: 15m
   timeout: 5m
@@ -24,7 +24,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: certmanager
-    namespace: flux-system
+    namespace: cert-manager
   values:
     crds:
       enabled: true
