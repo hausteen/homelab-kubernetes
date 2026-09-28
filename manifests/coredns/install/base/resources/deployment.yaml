@@ -16,13 +16,15 @@ spec:
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution: # setting to preferred instead of required so that scaling during updates can work correctly.
-          - topologyKey: "kubernetes.io/hostname"
-            labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - coredns
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - coredns
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
