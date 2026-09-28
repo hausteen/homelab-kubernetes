@@ -15,7 +15,7 @@ spec:
     spec:
       affinity:
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
+          preferredDuringSchedulingIgnoredDuringExecution: # setting to preferred instead of required so that scaling during updates can work correctly.
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchExpressions:
