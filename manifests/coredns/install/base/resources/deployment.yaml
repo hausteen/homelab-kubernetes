@@ -13,6 +13,16 @@ spec:
       labels:
         app: coredns
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - coredns
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
