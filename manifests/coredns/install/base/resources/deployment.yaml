@@ -15,7 +15,10 @@ spec:
     spec:
       affinity:
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution: # setting to preferred instead of required so that scaling during updates can work correctly.
+          # setting to preferred instead of required so that scaling during updates can work correctly.
+          # i only have 3 worker nodes, which means i can't have more than 3 pods total if i go the required route.
+          # during an update, I'll have 4 pods. going the preferred route solves this problem by loadbalancing as best as possible.
+          preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
               topologyKey: "kubernetes.io/hostname"
