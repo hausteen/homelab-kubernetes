@@ -4,12 +4,12 @@ metadata:
   name: gatewayapi-crds
   namespace: kube-system
 spec:
-  interval: 6h
+  interval: 24h
   url: https://github.com/kubernetes-sigs/gateway-api.git
   sparseCheckout:
-  - config/crd/experimental
-  # - config/crd/standard
+  # - config/crd/experimental
+  - config/crd/standard
   ref:
-    tag: v1.5.1
+    tag: v1.6.0
 
 # be careful of gateway api version requirements for nginx gateway fabric and other applications

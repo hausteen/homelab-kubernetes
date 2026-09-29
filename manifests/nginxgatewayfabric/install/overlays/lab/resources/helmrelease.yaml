@@ -35,9 +35,24 @@ spec:
       gwAPIExperimentalFeatures:
         enable: false
       gatewayClassName: ngf
-      replicas: 1
-    nginx:
       replicas: 2
+      affinity:
+        podAntiAffinity:
+          # setting to preferred instead of required so that scaling during updates can work correctly.
+          # i only have 3 worker nodes, which means i can't have more than 3 pods total if i go the required route.
+          # during an update, i may have more than 3 pods. going the preferred route solves this problem by loadbalancing as best as possible.
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchExpressions:
+                - key: "app.kubernetes.io/name"
+                  operator: In
+                  values:
+                  - nginx-gateway-fabric
+    nginx:
+      replicas: 3
       service:
         externalTrafficPolicy: Cluster
       config:
@@ -45,3 +60,19 @@ spec:
           agentLevel: info
           errorLevel: info
       debug: false
+      pod:
+        affinity:
+          podAntiAffinity:
+            # setting to preferred instead of required so that scaling during updates can work correctly.
+            # i only have 3 worker nodes, which means i can't have more than 3 pods total if i go the required route.
+            # during an update, i may have more than 3 pods. going the preferred route solves this problem by loadbalancing as best as possible.
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchExpressions:
+                  - key: "app.kubernetes.io/name"
+                    operator: In
+                    values:
+                    - nginx-gateway-fabric
