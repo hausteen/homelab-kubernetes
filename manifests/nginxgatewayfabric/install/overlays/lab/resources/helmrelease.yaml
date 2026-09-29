@@ -33,7 +33,7 @@ spec:
       productTelemetry:
         enable: false
       gwAPIExperimentalFeatures:
-        enable: true
+        enable: false
       gatewayClassName: ngf
       replicas: 1
     nginx:
