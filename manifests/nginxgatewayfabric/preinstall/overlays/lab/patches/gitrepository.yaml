@@ -1,0 +1,11 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: gatewayapi-crds
+  namespace: kube-system
+spec:
+  sparseCheckout:
+  # - config/crd/experimental
+  - config/crd/standard
+  ref:
+    tag: v1.6.0

@@ -33,3 +33,5 @@ spec:
     seccompProfile:
       type: RuntimeDefault
     autoscaleEnabled: false
+    global:
+      nativeNftables: true

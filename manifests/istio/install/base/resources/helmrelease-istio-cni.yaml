@@ -32,3 +32,5 @@ spec:
     profile: ambient
     seccompProfile:
       type: RuntimeDefault
+    global:
+      nativeNftables: true

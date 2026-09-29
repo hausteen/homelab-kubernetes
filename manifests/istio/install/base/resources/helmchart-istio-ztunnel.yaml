@@ -5,7 +5,7 @@ metadata:
   namespace: istio-system
 spec:
   chart: ztunnel
-  version: "1.29.x"
+  version: "1.30.x"
   sourceRef:
     kind: HelmRepository
     name: istio
