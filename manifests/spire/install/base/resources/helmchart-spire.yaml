@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: spire
+  namespace: spire-server
+spec:
+  chart: spire
+  version: "0.30.x"
+  sourceRef:
+    kind: HelmRepository
+    name: spire
+  interval: 24h
+  reconcileStrategy: ChartVersion

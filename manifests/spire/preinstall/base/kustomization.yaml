@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources/namespace-spire-server.yaml
+- resources/namespace-spire-system.yaml
+- resources/helmrepository.yaml
+- resources/helmchart-spire-crds.yaml

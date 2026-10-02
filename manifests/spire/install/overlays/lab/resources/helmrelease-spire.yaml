@@ -1,0 +1,51 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: spire
+  namespace: spire-server
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: spire
+  # targetNamespace: # this installs into 2 different namespaces...
+  chartRef:
+    kind: HelmChart
+    name: spire
+    namespace: spire-server
+  values:
+    global:
+      openshift: false
+      spire:
+        strictMode: true
+        recommendations:
+          enabled: true
+        namespaces:
+          create: false
+        ingressControllerType: "other" # when set to 'other', no annotations will be added
+        clusterName: lab
+        trustDomain: lab.hunt.internal
+        caSubject:
+          country: US
+          organization: hunt
+          commonName: lab.hunt.internal
+        persistence:
+          storageClass: withreplication
+
+# figure out how to use an external DB. then i can switch it to a deployment instead of a statefulset. and i can get rid of the persistence key.
+# figure out how to tap into cert-manager so i can get rid of the caSubject key.
+
+# https://artifacthub.io/packages/helm/spiffe/spire
+# https://github.com/spiffe/helm-charts-hardened
