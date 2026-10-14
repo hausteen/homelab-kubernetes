@@ -32,7 +32,7 @@ cluster:
   id: 1
 encryption:
   enabled: false
-  type: ztunnel
+  type: wireguard
 gatewayAPI:
   enabled: false
 l7Proxy: false
