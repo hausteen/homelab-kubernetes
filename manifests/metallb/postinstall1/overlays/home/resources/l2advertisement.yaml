@@ -1,0 +1,10 @@
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: dot30advertise
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - dot30pool
+  interfaces:
+  - eth0
