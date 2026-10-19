@@ -46,10 +46,10 @@ spec:
         port: 5432
         name: app # database name
         user: app # username
-        sslmode: verify-full
-        sslrootcert: /certs/ca.crt
-        sslcert: /certs/tls.crt # using mtls authentication instead of a password
-        sslkey: /certs/tls.key
+        # sslmode: verify-full
+        # sslrootcert: /certs/ca.crt
+        # sslcert: /certs/tls.crt # using mtls authentication instead of a password
+        # sslkey: /certs/tls.key
     server:
       replicas: 2
       containerSecurityContext:
@@ -59,27 +59,27 @@ spec:
           - ALL
         seccompProfile:
           type: RuntimeDefault
-      volumeMounts:
-      - name: certificates
-        mountPath: /certs
-        readOnly: true
-      volumes:
-      - name: certificates
-        projected:
-          defaultMode: 0600
-          sources:
-          - configMap:
-              name: huntinternal-trustbundle
-              items:
-              - key: ca.crt
-                path: ca.crt
-          - secret:
-              name: authentik-server-tls
-              items:
-              - key: tls.crt
-                path: tls.crt
-              - key: tls.key
-                path: tls.key
+      # volumeMounts:
+      # - name: certificates
+      #   mountPath: /certs
+      #   readOnly: true
+      # volumes:
+      # - name: certificates
+      #   projected:
+      #     defaultMode: 0600
+      #     sources:
+      #     - configMap:
+      #         name: huntinternal-trustbundle
+      #         items:
+      #         - key: ca.crt
+      #           path: ca.crt
+      #     - secret:
+      #         name: authentik-server-tls
+      #         items:
+      #         - key: tls.crt
+      #           path: tls.crt
+      #         - key: tls.key
+      #           path: tls.key
     worker:
       replicas: 2
       containerSecurityContext:
@@ -89,27 +89,27 @@ spec:
           - ALL
         seccompProfile:
           type: RuntimeDefault
-      volumeMounts:
-      - name: certificates
-        mountPath: /certs
-        readOnly: true
-      volumes:
-      - name: certificates
-        projected:
-          defaultMode: 0600
-          sources:
-          - configMap:
-              name: huntinternal-trustbundle
-              items:
-              - key: ca.crt
-                path: ca.crt
-          - secret:
-              name: authentik-server-tls
-              items:
-              - key: tls.crt
-                path: tls.crt
-              - key: tls.key
-                path: tls.key
+      # volumeMounts:
+      # - name: certificates
+      #   mountPath: /certs
+      #   readOnly: true
+      # volumes:
+      # - name: certificates
+      #   projected:
+      #     defaultMode: 0600
+      #     sources:
+      #     - configMap:
+      #         name: huntinternal-trustbundle
+      #         items:
+      #         - key: ca.crt
+      #           path: ca.crt
+      #     - secret:
+      #         name: authentik-server-tls
+      #         items:
+      #         - key: tls.crt
+      #           path: tls.crt
+      #         - key: tls.key
+      #           path: tls.key
     postgresql:
       enabled: false # do not enable the builtin postgres chart
   valuesFrom:

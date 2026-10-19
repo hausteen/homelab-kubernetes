@@ -2,6 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - ../../base
-- resources/certificate-authentik-server-tls.yaml
-- resources/certificate-authentik-db-tls-server.yaml
-- resources/certificate-authentik-db-tls-replication.yaml
+# - resources/certificate-authentik-server-tls.yaml
+# - resources/certificate-authentik-db-tls-server.yaml
+# - resources/certificate-authentik-db-tls-replication.yaml

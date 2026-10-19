@@ -5,14 +5,14 @@ metadata:
   namespace: authentik
 spec:
   instances: 3
-  certificates:
-    serverCASecret: authentik-db-tls-server
-    serverTLSSecret: authentik-db-tls-server
-    clientCASecret: authentik-db-tls-server
-    replicationTLSSecret: authentik-db-tls-replication
+  # certificates:
+  #   serverCASecret: authentik-db-tls-server
+  #   serverTLSSecret: authentik-db-tls-server
+  #   clientCASecret: authentik-db-tls-server
+  #   replicationTLSSecret: authentik-db-tls-replication
   postgresql:
     pg_hba:
-    - hostssl app all all cert
+    - hostnossl app app 0.0.0.0/0 trust # type database user address auth-method [auth-options]
   storage:
     pvcTemplate:
       accessModes:
