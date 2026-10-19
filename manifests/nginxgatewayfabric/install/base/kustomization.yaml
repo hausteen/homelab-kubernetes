@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
 - resources/namespace.yaml
 - resources/ocirepository.yaml
+- resources/helmrelease.yaml
 
 # https://docs.nginx.com/nginx-gateway-fabric/install/helm/
 # https://github.com/nginx/nginx-gateway-fabric/tree/main/charts/nginx-gateway-fabric
