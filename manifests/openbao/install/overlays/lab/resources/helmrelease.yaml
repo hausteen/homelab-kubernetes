@@ -27,7 +27,7 @@ spec:
     namespace: openbao
   values:
     global:
-      tlsDisable: false
+      tlsDisable: true # running over a service mesh so tls isn't needed for openbao
     ui:
       enabled: true
     csi:
@@ -59,8 +59,8 @@ spec:
               - ALL
             seccompProfile:
               type: RuntimeDefault
-      extraEnvironmentVars:
-        BAO_CACERT: /openbao/secrets/ca.crt
+      # extraEnvironmentVars:
+      #   BAO_CACERT: /openbao/secrets/ca.crt
       volumeMounts:
       - name: secrets
         mountPath: /openbao/secrets/
@@ -75,18 +75,18 @@ spec:
               name: openbao-server-unsealkey-previous
           - secret:
               name: openbao-account-adminpassword
-          - secret:
-              name: openbao-server-tls
-              items:
-              - key: tls.crt
-                path: tls.crt
-              - key: tls.key
-                path: tls.key
-          - configMap:
-              name: huntinternal-trustbundle
-              items:
-              - key: ca.crt
-                path: ca.crt
+          # - secret:
+          #     name: openbao-server-tls
+          #     items:
+          #     - key: tls.crt
+          #       path: tls.crt
+          #     - key: tls.key
+          #       path: tls.key
+          # - configMap:
+          #     name: huntinternal-trustbundle
+          #     items:
+          #     - key: ca.crt
+          #       path: ca.crt
       serviceAccount:
         name: openbao-server
       service:
@@ -100,15 +100,15 @@ spec:
         config: |
           ui = true
           listener "tcp" {
-            tls_disable = "false"
+            tls_disable = "true"
             address = "[::]:8200"
             cluster_address = "[::]:8201"
-            tls_min_version = "tls13"
-            tls_cert_file = "/openbao/secrets/tls.crt"
-            tls_key_file  = "/openbao/secrets/tls.key"
+            # tls_min_version = "tls13"
+            # tls_cert_file = "/openbao/secrets/tls.crt"
+            # tls_key_file  = "/openbao/secrets/tls.key"
           }
           storage "postgresql" {
-            connection_url = "postgres://app@openbao-db-rw.openbao.svc.cluster.local:5432/app?sslmode=verify-full&sslrootcert=/openbao/secrets/ca.crt&sslcert=/openbao/secrets/tls.crt&sslkey=/openbao/secrets/tls.key"
+            connection_url = "postgres://app@openbao-db-rw.openbao.svc.cluster.local:5432/app?sslmode=disable"
             ha_enabled = "true"
             max_connect_retries = 0 # sets it to unlimited retries to connect to the database
           }

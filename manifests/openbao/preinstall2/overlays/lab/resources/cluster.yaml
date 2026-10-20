@@ -5,14 +5,14 @@ metadata:
   namespace: openbao
 spec:
   instances: 3
-  certificates:
-    serverCASecret: openbao-db-tls-server
-    serverTLSSecret: openbao-db-tls-server
-    clientCASecret: openbao-db-tls-server
-    replicationTLSSecret: openbao-db-tls-replication
+  # certificates:
+  #   serverCASecret: openbao-db-tls-server
+  #   serverTLSSecret: openbao-db-tls-server
+  #   clientCASecret: openbao-db-tls-server
+  #   replicationTLSSecret: openbao-db-tls-replication
   postgresql:
     pg_hba:
-    - hostssl app all all cert
+    - hostnossl app app 0.0.0.0/0 trust # type database user address auth-method [auth-options]
   storage:
     pvcTemplate:
       accessModes:
