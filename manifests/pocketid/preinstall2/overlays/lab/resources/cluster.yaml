@@ -5,14 +5,14 @@ metadata:
   namespace: pocket-id
 spec:
   instances: 3
-  certificates:
-    serverCASecret: pocketid-db-tls-server
-    serverTLSSecret: pocketid-db-tls-server
-    clientCASecret: pocketid-db-tls-server
-    replicationTLSSecret: pocketid-db-tls-replication
+  # certificates:
+  #   serverCASecret: pocketid-db-tls-server
+  #   serverTLSSecret: pocketid-db-tls-server
+  #   clientCASecret: pocketid-db-tls-server
+  #   replicationTLSSecret: pocketid-db-tls-replication
   postgresql:
     pg_hba:
-    - hostssl app all all cert
+    - hostnossl app app 0.0.0.0/0 trust # type database user address auth-method [auth-options]
   storage:
     pvcTemplate:
       accessModes:

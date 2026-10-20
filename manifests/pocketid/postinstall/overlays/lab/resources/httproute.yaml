@@ -19,6 +19,6 @@ spec:
         value: /
     backendRefs:
     - name: pocketid-server
-      port: 443
+      port: 80
       weight: 1
       kind: Service

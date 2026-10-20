@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: pocketid
-        image: ghcr.io/pocket-id/pocket-id:v2.13.0-distroless
+        image: ghcr.io/pocket-id/pocket-id:v2.18.0-distroless
         ports:
         - containerPort: 1411
           protocol: TCP
@@ -74,18 +74,18 @@ spec:
           sources:
           - secret:
               name: pocketid-server-encryptionkey
-          - secret:
-              name: pocketid-server-tls
-              items:
-              - key: tls.crt
-                path: tls.crt
-              - key: tls.key
-                path: tls.key
-          - configMap:
-              name: huntinternal-trustbundle
-              items:
-              - key: ca.crt
-                path: ca.crt
+          # - secret:
+          #     name: pocketid-server-tls
+          #     items:
+          #     - key: tls.crt
+          #       path: tls.crt
+          #     - key: tls.key
+          #       path: tls.key
+          # - configMap:
+          #     name: huntinternal-trustbundle
+          #     items:
+          #     - key: ca.crt
+          #       path: ca.crt
   volumeClaimTemplates:
   - metadata:
       name: data-volume

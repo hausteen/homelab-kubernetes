@@ -5,7 +5,7 @@ metadata:
   namespace: pocket-id
 spec:
   ports:
-    - port: 443
+    - port: 80
       targetPort: 1411
       protocol: TCP
   ipFamilies:
