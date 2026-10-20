@@ -14,4 +14,4 @@ spec:
           metadata:
             annotations:
               lbipam.cilium.io/ips: placeholder
-              # metallb.io/loadBalancerIPs: placeholder
+              metallb.io/loadBalancerIPs: placeholder

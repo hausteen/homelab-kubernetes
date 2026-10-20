@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: nginx-gateway-fabric
-  # labels:
-    # istio.io/dataplane-mode: ambient
+  labels:
+    istio.io/dataplane-mode: ambient
     # istio.io/use-waypoint: waypoint
 
 # this is the control plane namespace for nginx gateway fabric.
