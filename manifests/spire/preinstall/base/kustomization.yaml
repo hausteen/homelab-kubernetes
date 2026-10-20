@@ -5,3 +5,4 @@ resources:
 - resources/namespace-spire-system.yaml
 - resources/helmrepository.yaml
 - resources/helmchart-spire-crds.yaml
+- resources/helmchart-spire.yaml
