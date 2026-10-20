@@ -5,7 +5,7 @@ metadata:
   namespace: trivy-system
 spec:
   chart: trivy-operator
-  version: "0.36.x"
+  version: "0.37.x"
   sourceRef:
     kind: HelmRepository
     name: aquasecurity
