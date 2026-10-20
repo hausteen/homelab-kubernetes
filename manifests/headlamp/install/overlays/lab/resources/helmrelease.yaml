@@ -41,20 +41,20 @@ spec:
       seccompProfile:
         type: RuntimeDefault
     service:
-      appProtocol: https
-      port: 443
+      appProtocol: http
+      port: 80
     env:
     - name: HEADLAMP_CONFIG_LOG_LEVEL
       value: info
     probes:
-      scheme: HTTPS # 'HTTPS' required when tls is enabled
+      scheme: HTTP
     clusterRoleBinding:
       create: true # set this to false when ready to use oidc and my own clusterrole and binding
     config:
       inCluster: true
       inClusterContextName: lab
-      tlsCertPath: "/secrets/tls.crt"
-      tlsKeyPath: "/secrets/tls.key"
+      # tlsCertPath: "/secrets/tls.crt"
+      # tlsKeyPath: "/secrets/tls.key"
       # oidc:
       #   secret:
       #     create: false
@@ -90,15 +90,15 @@ spec:
     volumeMounts:
     - name: home-folder-config
       mountPath: /home/headlamp/.config # the container wants to write to this folder for some reason
-    - name: headlamp-server-tls
-      mountPath: /secrets
+    # - name: headlamp-server-tls
+    #   mountPath: /secrets
     - name: tmp
       mountPath: /tmp
     volumes:
     - name: home-folder-config
       emptyDir: {}
-    - name: headlamp-server-tls
-      secret:
-        secretName: headlamp-server-tls
+    # - name: headlamp-server-tls
+    #   secret:
+    #     secretName: headlamp-server-tls
     - name: tmp
       emptyDir: {}

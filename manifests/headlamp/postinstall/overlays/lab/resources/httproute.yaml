@@ -19,6 +19,6 @@ spec:
         value: /
     backendRefs:
     - name: headlamp
-      port: 443
+      port: 80
       weight: 1
       kind: Service
