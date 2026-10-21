@@ -1,0 +1,10 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: clusteringress-frontdoor
+  namespace: gatewayapi
+spec:
+  infrastructure:
+    annotations:
+      metallb.io/loadBalancerIPs: 192.168.30.4 # needed at the service level. this allows metallb to provide the ip I want to the service.
+      lbipam.cilium.io/ips: 192.168.30.4 # needed at the service level. this allows cilium to provide the ip I want to the service.

@@ -26,16 +26,16 @@ spec:
     name: nginxgatewayfabric
     namespace: nginx-gateway-fabric
   values:
-    nginxGateway:
+    nginxGateway: # ngf control plane configuration. these are global settings here.
+      gatewayClassName: ngf # nginx gateway fabric only supports 1 gateway class as of 13 may 2026 and the default one is called 'nginx'. the chart creates it for us. i've renamed it to ngf.
+      replicas: 2
+      gwAPIExperimentalFeatures:
+        enable: false
       config:
         logging:
           level: info
       productTelemetry:
         enable: false
-      gwAPIExperimentalFeatures:
-        enable: false
-      gatewayClassName: ngf
-      replicas: 2
       affinity:
         podAntiAffinity:
           # setting to preferred instead of required so that scaling during updates can work correctly.
@@ -51,15 +51,17 @@ spec:
                   operator: In
                   values:
                   - nginx-gateway-fabric
-    nginx:
+    nginx: # ngf data plane configuration. these are global settings here. they apply to all gateways managed by the default gateway class
+      debug: false
       replicas: 3
+      ipFamily: ipv4
+      useClusterIP: true # send traffic to the upstream service instead of directly to the upstream service's pods
       service:
-        externalTrafficPolicy: Cluster
+        externalTrafficPolicy: Cluster # routes traffic to any of the service's pods. you want this when you don't have a pod on every node where the traffic comes into the cluster.
       config:
         logging:
           agentLevel: info
           errorLevel: info
-      debug: false
       pod:
         affinity:
           podAntiAffinity:
@@ -76,3 +78,9 @@ spec:
                     operator: In
                     values:
                     - nginx-gateway-fabric
+      # rewriteClientIP: # only enable this when ngf is behind another proxy or load balancer.
+      #   mode: XForwardedFor
+      #   setIPRecursively: true
+      #   trustedAddresses:
+      #   - type: CIDR
+      #     value: "0.0.0.0/0"

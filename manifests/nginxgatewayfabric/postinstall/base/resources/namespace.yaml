@@ -5,5 +5,3 @@ metadata:
   labels:
     istio.io/dataplane-mode: ambient
     # istio.io/use-waypoint: waypoint
-
-# this namespace CANNOT enforce strict mtls since traffic is coming from the outside world

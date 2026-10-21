@@ -6,10 +6,15 @@ metadata:
 spec:
   gatewayClassName: ngf
   infrastructure:
-    parametersRef:
-        group: gateway.nginx.org
-        kind: NginxProxy
-        name: clusteringress-frontdoor
+    annotations:
+      # these are each applied to the service, the deployment, and the pods when using nginx gateway fabric as the implementation.
+      # they are crucial to have here. this is literally the simplest way to make this work.
+      # now i don't have to create custom nginxProxy files and patch them all, etc.
+      # i only patch this gateway file and swap out these annotations as needed. this is amazing.
+      ambient.istio.io/bypass-inbound-capture: "true" # needed at the pod level. this makes it so ztunnel does NOT intercept inbound traffic. outbound traffic from this pod still goes through ztunnel.
+      ambient.istio.io/dns-capture: "false" # needed at the pod level. this makes it so that ztunnel does not try to proxy dns traffic and clobber my tcp/udproutes that go to my coredns service.
+      metallb.io/loadBalancerIPs: placeholder # needed at the service level. this allows metallb to provide the ip I want to the service.
+      lbipam.cilium.io/ips: placeholder # needed at the service level. this allows cilium to provide the ip I want to the service.
   listeners:
   - name: http
     protocol: HTTP
