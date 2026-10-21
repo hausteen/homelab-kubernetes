@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: coredns
   namespace: coredns
+  annotations:
+    ambient.istio.io/dns-capture: "false" # needed at the pod level. this makes it so that ztunnel does not try to proxy dns traffic and clobber my service
 spec:
   replicas: 2
   selector:
