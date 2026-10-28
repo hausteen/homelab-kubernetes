@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: opentelemetry
+  namespace: opentelemetry
+spec:
+  chart: opentelemetry-collector
+  version: "0.177.x"
+  sourceRef:
+    kind: HelmRepository
+    name: opentelemetry
+  interval: 24h
+  reconcileStrategy: ChartVersion

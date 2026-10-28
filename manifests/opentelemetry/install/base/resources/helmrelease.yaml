@@ -1,0 +1,103 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: opentelemetry
+  namespace: opentelemetry
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: opentelemetry
+  targetNamespace: opentelemetry
+  chartRef:
+    kind: HelmChart
+    name: opentelemetry
+    namespace: opentelemetry
+  values:
+    mode: daemonset # daemonset so that it runs on each node to get the data from each machine
+    image:
+      repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
+    command:
+      name: otelcol-k8s
+    presets:
+      logsCollection: # collect logs sent to standard output by Kubernetes containers. best with daemonset
+        enabled: true
+        includeCollectorLogs: true
+      hostMetrics: # collect host metrics from Kubernetes nodes. best with daemonset
+        enabled: true
+      kubernetesAttributes: # add Kubernetes metadata, such as k8s.pod.name, k8s.namespace.name, and k8s.node.name, to logs, metrics and traces. best with daemonset
+        enabled: true
+        extractAllPodLabels: true
+        extractAllPodAnnotations: true
+      kubeletMetrics: # collect node, pod, and container metrics from the API server on a kubelet. with with daemonset
+        enabled: true
+      clusterMetrics: # collect cluster-level metrics from the Kubernetes API server. can be used with deployment, statefulset, or daemonset
+        enabled: true
+      # kubernetesEvents: # collect Kubernetes events. best used with deployment or statefulset
+      #   enabled: true
+      #   useK8sEventsReceiver: true
+    config:
+      receivers: # otlp is enabled by default
+        jaeger: null
+        prometheus: null
+        zipkin: null
+        kubeletstats:
+          insecure_skip_verify: true
+      exporters:
+        otlphttp/victorialogs:
+          logs_endpoint: http://victorialogs-victoria-logs-single-server.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
+          compression: gzip
+          tls:
+            insecure: true
+        otlphttp/victoriametrics:
+          metrics_endpoint: http://victoriametrics-victoria-metrics-single-server.observability.svc.cluster.local:8428/opentelemetry/v1/metrics
+          compression: gzip
+          encoding: proto
+          tls:
+            insecure: true
+        otlphttp/victoriatraces:
+          traces_endpoint: http://victoriatraces-vt-single-server.observability.svc.cluster.local:10428/insert/opentelemetry/v1/traces
+          compression: gzip
+          tls:
+            insecure: true
+      processors:
+        deltatocumulative: # victoriametrics needs this
+          max_stale: 5m
+      service:
+        pipelines:
+          logs:
+            receivers:
+            - otlp
+            exporters:
+            - otlphttp/victorialogs
+          metrics:
+            receivers:
+            - otlp
+            processors:
+            - deltatocumulative
+            exporters:
+            - otlphttp/victoriametrics
+          traces:
+            receivers:
+            - otlp
+            exporters:
+            - otlphttp/victoriatraces
+    tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+
+# https://github.com/open-telemetry/opentelemetry-helm-charts
+# https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/
