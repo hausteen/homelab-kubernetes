@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: victoriatraces
+  namespace: observability
+spec:
+  chart: victoria-traces-single
+  version: "0.1.x"
+  sourceRef:
+    kind: HelmRepository
+    name: victoriametrics
+  interval: 24h
+  reconcileStrategy: ChartVersion
