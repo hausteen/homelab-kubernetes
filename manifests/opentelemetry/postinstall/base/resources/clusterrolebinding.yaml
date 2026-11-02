@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: # needed for k8s attributes processor, kubeletstats receiver, k8s cluster receiver, k8s objects receiver
+  name: opentelemetry-collector
+subjects:
+- kind: ServiceAccount
+  name: opentelemetry-collector
+  namespace: opentelemetry
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: opentelemetry-collector

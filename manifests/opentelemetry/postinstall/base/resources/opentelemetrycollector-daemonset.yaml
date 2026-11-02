@@ -1,0 +1,232 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: opentelemetry-collector-daemonset
+  namespace: opentelemetry
+spec:
+  mode: daemonset
+  # replicas: 1
+  serviceAccount: opentelemetry-collector
+  tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+  env:
+  - name: K8S_NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: K8S_NODE_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  volumeMounts:
+  - name: varlogpods # for file_log receiver
+    mountPath: /var/log/pods
+    readOnly: true
+  - name: hostfs # for host metrics
+    mountPath: /hostfs
+    readOnly: true
+    mountPropagation: HostToContainer
+  volumes:
+  - name: varlogpods # for file_log receiver
+    hostPath:
+      path: /var/log/pods
+      type: Directory
+  - name: hostfs # for host metrics
+    hostPath:
+      path: /
+      type: Directory
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  config:
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+      k8s_leader_elector: # needed for k8s cluster receiver, k8s objects receiver.
+        auth_type: serviceAccount
+        lease_name: opentelemetry-collector-leader
+        lease_namespace: opentelemetry
+        lease_duration: 15s
+        renew_deadline: 10s
+        retry_period: 2s
+    receivers:
+      file_log:
+        include:
+        - /var/log/pods/*/*/*.log
+        # exclude:
+        #   - /var/log/pods/*-opentelemetry-collector-*.log
+        start_at: end
+        include_file_path: true
+        include_file_name: false
+        operators:
+        - id: container-parser
+          type: container
+      kubelet_stats:
+        collection_interval: 10s
+        auth_type: serviceAccount
+        endpoint: ${env:K8S_NODE_IP}:10250
+        insecure_skip_verify: true
+        collect_all_network_interfaces:
+          pod: true
+          node: true
+        metric_groups:
+        - node
+        - pod
+        - container
+        - volume
+        extra_metadata_labels:
+        - container.id
+        - k8s.volume.type
+      host_metrics:
+        root_path: /hostfs
+        collection_interval: 10s
+        scrapers:
+          cpu: {}
+          load: {}
+          memory: {}
+          disk: {}
+          # filesystem: {} # this one is causing me trouble if this pod doesn't run as root. disabling it since i dont want this pod to run as root.
+          network: {}
+          paging: {}
+      k8s_cluster:
+        auth_type: serviceAccount
+        collection_interval: 10s
+        k8s_leader_elector: k8s_leader_elector
+        node_conditions_to_report:
+        - MemoryPressure
+        - Ready
+        allocatable_types_to_report:
+        - cpu
+        - memory
+        - ephemeral-storage
+        - pods
+        metrics: # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/k8sclusterreceiver/documentation.md
+          k8s.service.endpoint.count:
+            enabled: true
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+      k8s_objects:
+        auth_type: serviceAccount
+        k8s_leader_elector: k8s_leader_elector
+        objects:
+        - name: networkpolicies
+          mode: watch
+          group: networking.k8s.io
+    processors:
+      batch: {}
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 75
+        spike_limit_percentage: 15
+      k8s_attributes:
+        auth_type: serviceAccount
+        filter:
+          node_from_env_var: K8S_NODE_NAME
+        extract:
+          metadata:
+          - k8s.namespace.name
+          - k8s.pod.name
+          - k8s.pod.uid
+          - k8s.pod.start_time
+          - k8s.deployment.name
+          - k8s.node.name
+          - k8s.container.name
+        pod_association:
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.ip
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.name
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.uid
+        - sources:
+          - from: connection
+      deltatocumulative: # victoriametrics needs this
+        max_stale: 5m
+    exporters:
+      debug: {}
+      otlp_http/victorialogs:
+        logs_endpoint: http://victorialogs-victoria-logs-single-server.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
+        compression: gzip
+        tls:
+          insecure: true
+      otlp_http/victoriametrics:
+        metrics_endpoint: http://victoriametrics-victoria-metrics-single-server.observability.svc.cluster.local:8428/opentelemetry/v1/metrics
+        compression: gzip
+        encoding: proto
+        tls:
+          insecure: true
+      otlp_http/victoriatraces:
+        traces_endpoint: http://victoriatraces-vt-single-server.observability.svc.cluster.local:10428/insert/opentelemetry/v1/traces
+        compression: gzip
+        tls:
+          insecure: true
+    service: # this is what really instantiates the collector. the above defines all the items; we link them together down here.
+      telemetry:
+        logs:
+          level: info
+      extensions:
+      - health_check
+      - k8s_leader_elector
+      pipelines:
+        logs:
+          receivers:
+          - file_log
+          - k8s_objects
+          # - otlp
+          processors:
+          - memory_limiter
+          - k8s_attributes
+          - batch
+          exporters:
+          - otlp_http/victorialogs
+          # - debug
+        metrics/node:
+          receivers:
+          - kubelet_stats
+          - host_metrics
+          # - otlp
+          processors:
+          - memory_limiter
+          - k8s_attributes
+          - batch
+          exporters:
+          - otlp_http/victoriametrics
+          # - debug
+        metrics/cluster:
+          receivers:
+          - k8s_cluster
+          # - otlp
+          processors: # no k8s_attributes here intentionally - do not want the node level filtering.
+          - memory_limiter
+          - batch
+          exporters:
+          - otlp_http/victoriametrics
+          # - debug
+        traces:
+          receivers:
+          # - otlp
+          processors:
+          - memory_limiter
+          - k8s_attributes
+          - batch
+          exporters:
+          - otlp_http/victoriatraces
+          # - debug
+
+# https://github.com/open-telemetry/opentelemetry-helm-charts
+# https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/
+# https://opentelemetry.io/docs/platforms/kubernetes/collector/components/
+# https://opentelemetry.io/docs/collector/components/
