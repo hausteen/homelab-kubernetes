@@ -5,7 +5,6 @@ metadata:
   namespace: opentelemetry
 spec:
   mode: daemonset
-  # replicas: 1
   serviceAccount: opentelemetry-collector
   tolerations:
   - key: node-role.kubernetes.io/control-plane
@@ -153,7 +152,7 @@ spec:
             name: k8s.pod.uid
         - sources:
           - from: connection
-      deltatocumulative: # victoriametrics needs this
+      delta_to_cumulative: # victoriametrics needs this
         max_stale: 5m
     exporters:
       debug: {}
@@ -201,6 +200,7 @@ spec:
           processors:
           - memory_limiter
           - k8s_attributes
+          - delta_to_cumulative
           - batch
           exporters:
           - otlp_http/victoriametrics
@@ -211,20 +211,21 @@ spec:
           # - otlp
           processors: # no k8s_attributes here intentionally - do not want the node level filtering.
           - memory_limiter
+          - delta_to_cumulative
           - batch
           exporters:
           - otlp_http/victoriametrics
           # - debug
-        traces:
-          receivers:
-          # - otlp
-          processors:
-          - memory_limiter
-          - k8s_attributes
-          - batch
-          exporters:
-          - otlp_http/victoriatraces
-          # - debug
+        # traces:
+        #   receivers:
+        #   # - otlp
+        #   processors:
+        #   - memory_limiter
+        #   - k8s_attributes
+        #   - batch
+        #   exporters:
+        #   - otlp_http/victoriatraces
+        #   # - debug
 
 # https://github.com/open-telemetry/opentelemetry-helm-charts
 # https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/

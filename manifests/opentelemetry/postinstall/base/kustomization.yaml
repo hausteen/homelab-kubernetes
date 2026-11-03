@@ -7,3 +7,4 @@ resources:
 - resources/role.yaml
 - resources/rolebinding.yaml
 - resources/opentelemetrycollector-daemonset.yaml
+- resources/opentelemetrycollector-deployment.yaml
