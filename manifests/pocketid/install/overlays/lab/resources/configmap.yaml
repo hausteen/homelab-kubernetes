@@ -16,11 +16,11 @@ data:
   PGID: "1000"
   HOST: "0.0.0.0"
   PORT: "1411"
-  LOG_LEVEL: "debug" # info
+  LOG_LEVEL: "info" # debug
   LOG_JSON: "true"
   VERSION_CHECK_DISABLED: "true"
   ANALYTICS_DISABLED: "true"
   # OTEL_LOGS_EXPORTER: otlp
   # OTEL_METRICS_EXPORTER: otlp
   # OTEL_TRACES_EXPORTER: otlp
-  # OTEL_EXPORTER_OTLP_ENDPOINT: "http://<service name or ip>:4318"
+  # OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-collector-deployment-collector.opentelemetry.svc.cluster.local:4318"
