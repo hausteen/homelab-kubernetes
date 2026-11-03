@@ -6,6 +6,3 @@ metadata:
 spec:
   mtls:
     mode: STRICT
-
-# this enables strict mutual tls for the given namespace
-# do NOT add these namespaces to the service mesh: kube-system, flux-system, istio-system, cert-manager/trust-manager?
