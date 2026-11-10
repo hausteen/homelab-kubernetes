@@ -36,6 +36,7 @@ data:
     ; an A record is very important to have for NS records so don't delete it. it solves a chicken and egg problem.
     ns1                             IN      A       192.168.30.4
     hubble                          IN      A       192.168.30.4
+    *                               IN      A       192.168.30.4
 
     ; ------------------------------------------------------------------------------------------------------------------------------------------
     ; TXT records
