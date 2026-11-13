@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: prometheus-node-exporter
+  namespace: prometheus-node-exporter
+spec:
+  chart: prometheus-node-exporter
+  version: "5.1.x"
+  sourceRef:
+    kind: HelmRepository
+    name: prometheus-community
+  interval: 24h
+  reconcileStrategy: ChartVersion

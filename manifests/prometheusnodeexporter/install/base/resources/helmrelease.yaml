@@ -1,0 +1,31 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: prometheus-node-exporter
+  namespace: prometheus-node-exporter
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: prometheus-node-exporter
+  targetNamespace: prometheus-node-exporter
+  chartRef:
+    kind: HelmChart
+    name: prometheus-node-exporter
+    namespace: prometheus-node-exporter
+  # values:
+
+# long term figure out how to block outside access to this port 9100 since its
+# on the host network and must be in order to view host networking metrics
