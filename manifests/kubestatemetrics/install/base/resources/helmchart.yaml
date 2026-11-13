@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: kube-state-metrics
+  namespace: kube-state-metrics
+spec:
+  chart: kube-state-metrics
+  version: "9.0.x"
+  sourceRef:
+    kind: HelmRepository
+    name: prometheus-community
+  interval: 24h
+  reconcileStrategy: ChartVersion

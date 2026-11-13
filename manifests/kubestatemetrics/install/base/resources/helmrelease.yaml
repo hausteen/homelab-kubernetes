@@ -1,0 +1,38 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-state-metrics
+  namespace: kube-state-metrics
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: kube-state-metrics
+  targetNamespace: kube-state-metrics
+  chartRef:
+    kind: HelmChart
+    name: kube-state-metrics
+    namespace: kube-state-metrics
+  values:
+    collectorsExtra:
+    - mutatingadmissionpolicies
+    - mutatingadmissionpolicybindings
+    - validatingadmissionpolicies
+    - validatingadmissionpolicybindings
+    - clusterrolebindings
+    - clusterroles
+    - roles
+    - rolebindings
+    - serviceaccounts
