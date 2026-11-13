@@ -1,8 +1,8 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: victoriametrics
-  namespace: observability
+  name: victoria-logs-single
+  namespace: observability-restricted
 spec:
   interval: 15m
   timeout: 5m
@@ -19,27 +19,22 @@ spec:
     strategy:
       name: RetryOnFailure
       retryInterval: 5m
-  releaseName: victoriametrics
-  targetNamespace: observability
+  releaseName: vls
+  targetNamespace: observability-restricted
   chartRef:
     kind: HelmChart
-    name: victoriametrics
-    namespace: observability
+    name: victoria-logs-single
+    namespace: observability-restricted
   values:
+    nameOverride: vls
     server:
       persistentVolume:
-        storageClassName: "withoutreplication"
+        storageClassName: withoutreplication
         size: 10Gi
-      retentionPeriod: 1y
-      retentionMaxDiskUsagePercent: 90
-      podSecurityContext:
-        enabled: true
-        fsGroup: 65534
+      retentionPeriod: 180d
+      retentionMaxDiskUsagePercent: "90" # string
       securityContext:
         enabled: true
-        runAsUser: 65534
-        runAsGroup: 65534
-        runAsNonRoot: true
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         seccompProfile:

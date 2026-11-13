@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: observability
+  name: observability-restricted
   labels:
     istio.io/dataplane-mode: ambient
     # istio.io/use-waypoint: waypoint

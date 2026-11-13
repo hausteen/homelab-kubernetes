@@ -1,8 +1,8 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: victorialogs
-  namespace: observability
+  name: victoria-metrics-single
+  namespace: observability-restricted
 spec:
   interval: 15m
   timeout: 5m
@@ -19,21 +19,29 @@ spec:
     strategy:
       name: RetryOnFailure
       retryInterval: 5m
-  releaseName: victorialogs
-  targetNamespace: observability
+  releaseName: vms
+  targetNamespace: observability-restricted
   chartRef:
     kind: HelmChart
-    name: victorialogs
-    namespace: observability
+    name: victoria-metrics-single
+    namespace: observability-restricted
   values:
+    nameOverride: vms
     server:
       persistentVolume:
-        storageClassName: "withoutreplication"
+        storageClassName: withoutreplication
         size: 10Gi
-      retentionPeriod: 1y
-      retentionMaxDiskUsagePercent: 90
+      retentionPeriod: 1M # lowercase m means minutes (not allowed). uppercase M means months (is allowed).
+      extraArgs:
+        maxLabelsPerTimeseries: "60" # string. needed for istio higher count of labels
+      podSecurityContext:
+        enabled: true
+        fsGroup: 65534
       securityContext:
         enabled: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         seccompProfile:

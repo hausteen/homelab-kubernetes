@@ -2,7 +2,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: victorialogs-routing-dashboard
-  namespace: observability
+  namespace: observability-restricted
 spec:
   parentRefs:
   - name: clusteringress-frontdoor
@@ -18,7 +18,7 @@ spec:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: victorialogs-victoria-logs-single-server
+    - name: vls-server
       port: 9428
       weight: 1
       kind: Service

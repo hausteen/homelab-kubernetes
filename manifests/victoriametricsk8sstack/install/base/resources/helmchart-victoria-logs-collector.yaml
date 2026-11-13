@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: victoria-logs-collector
+  namespace: observability-restricted # this has to go here since the helm repository is in this namespace
+spec:
+  chart: victoria-logs-collector
+  version: "0.3.x"
+  sourceRef:
+    kind: HelmRepository
+    name: victoriametrics
+  interval: 24h
+  reconcileStrategy: ChartVersion
