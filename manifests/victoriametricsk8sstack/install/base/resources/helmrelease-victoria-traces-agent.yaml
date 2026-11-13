@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: victoria-traces-agent
-  namespace: observability-restricted
+  namespace: victoriametrics-restricted
 spec:
   interval: 15m
   timeout: 5m
@@ -20,15 +20,15 @@ spec:
       name: RetryOnFailure
       retryInterval: 5m
   releaseName: vta
-  targetNamespace: observability-restricted
+  targetNamespace: victoriametrics-restricted
   chartRef:
     kind: HelmChart
     name: victoria-traces-agent
-    namespace: observability-restricted
+    namespace: victoriametrics-restricted
   values:
     nameOverride: vta
     remoteWrite:
-    - url: http://vts-server.observability-restricted.svc.cluster.local:10428
+    - url: http://vts-server.victoriametrics-restricted.svc.cluster.local:10428
     persistentVolume:
       enabled: true
       storageClassName: withoutreplication

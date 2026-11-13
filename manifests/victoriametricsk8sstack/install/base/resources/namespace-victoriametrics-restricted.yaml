@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: observability-restricted
+  name: victoriametrics-restricted
   labels:
     istio.io/dataplane-mode: ambient
     # istio.io/use-waypoint: waypoint

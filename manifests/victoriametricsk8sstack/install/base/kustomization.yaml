@@ -1,8 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- resources/namespace-observability-restricted.yaml
-- resources/namespace-observability-privileged.yaml
+- resources/namespace-victoriametrics-restricted.yaml
+- resources/namespace-victoriametrics-privileged.yaml
 - resources/helmrepository.yaml
 - resources/helmchart-victoria-logs-collector.yaml
 - resources/helmchart-victoria-logs-single.yaml

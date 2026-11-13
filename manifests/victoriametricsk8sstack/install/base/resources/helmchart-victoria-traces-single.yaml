@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: victoria-traces-single
-  namespace: observability-restricted
+  namespace: victoriametrics-restricted
 spec:
   chart: victoria-traces-single
   version: "0.1.x"

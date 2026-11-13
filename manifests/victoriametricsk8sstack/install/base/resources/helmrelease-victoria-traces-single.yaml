@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: victoria-traces-single
-  namespace: observability-restricted
+  namespace: victoriametrics-restricted
 spec:
   interval: 15m
   timeout: 5m
@@ -20,11 +20,11 @@ spec:
       name: RetryOnFailure
       retryInterval: 5m
   releaseName: vts
-  targetNamespace: observability-restricted
+  targetNamespace: victoriametrics-restricted
   chartRef:
     kind: HelmChart
     name: victoria-traces-single
-    namespace: observability-restricted
+    namespace: victoriametrics-restricted
   values:
     nameOverride: vts
     server:
