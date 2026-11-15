@@ -1,0 +1,23 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  name: vma
+  namespace: victoriametrics-restricted
+spec:
+  selectAllByDefault: true
+  scrapeInterval: 30s
+  scrapeTimeout: 10s
+  remoteWrite:
+  - url: http://vmsingle-vms.victoriametrics-restricted.svc.cluster.local:8428/api/v1/write
+  remoteWriteSettings:
+    maxDiskUsagePerURL: 1GiB # buffer's max disk size if vmsingle isn't available
+  statefulMode: true # runs as a statefulset
+  statefulStorage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: withoutreplication
+        resources:
+            requests:
+              storage: 2Gi
+
+# https://docs.victoriametrics.com/operator/resources/vmagent/

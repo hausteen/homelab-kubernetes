@@ -1,0 +1,18 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMSingle
+metadata:
+  name: vms
+  namespace: victoriametrics-restricted
+spec:
+  retentionPeriod: 1M # lowercase m means minutes (not allowed). uppercase M means months (is allowed).
+  removePvcAfterDelete: true
+  storage:
+    storageClassName: withoutreplication
+    resources:
+      requests:
+        storage: 10Gi
+  extraArgs: # https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#list-of-command-line-flags
+    dedup.minScrapeInterval: 60s # dedup metric data just in case of high availability agent metric scraping
+    maxLabelsPerTimeseries: "60" # string. needed for istio higher count of labels
+
+# https://docs.victoriametrics.com/operator/resources/vmsingle/

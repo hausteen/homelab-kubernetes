@@ -1,0 +1,17 @@
+apiVersion: operator.victoriametrics.com/v1
+kind: VLSingle
+metadata:
+  name: vls
+  namespace: victoriametrics-restricted
+spec:
+  retentionPeriod: 180d
+  removePvcAfterDelete: true
+  storage:
+    storageClassName: withoutreplication
+    resources:
+      requests:
+        storage: 10Gi
+  extraArgs: # https://docs.victoriametrics.com/victorialogs/#list-of-command-line-flags
+    retention.maxDiskUsagePercent: "90" # string
+
+# https://docs.victoriametrics.com/operator/resources/vlsingle/#specification

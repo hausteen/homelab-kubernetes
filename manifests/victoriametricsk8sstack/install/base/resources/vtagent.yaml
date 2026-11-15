@@ -1,0 +1,21 @@
+apiVersion: operator.victoriametrics.com/v1
+kind: VTAgent
+metadata:
+  name: vta
+  namespace: victoriametrics-restricted
+spec:
+  remoteWrite:
+  - url: http://vtsingle-vts.victoriametrics-restricted.svc.cluster.local:10428/insert/opentelemetry/v1/traces
+    maxDiskUsage: 1GiB # buffer's max disk size if vtsingle isn't available
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: withoutreplication
+        resources:
+          requests:
+            storage: 2Gi
+
+# runs as a statefulset
+# https://docs.victoriametrics.com/operator/resources/vtagent/

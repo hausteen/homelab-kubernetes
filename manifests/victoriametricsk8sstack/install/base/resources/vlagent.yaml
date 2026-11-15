@@ -1,0 +1,17 @@
+apiVersion: operator.victoriametrics.com/v1
+kind: VLAgent
+metadata:
+  name: vla
+  namespace: victoriametrics-privileged
+spec:
+  remoteWrite:
+  - url: http://vlsingle-vls.victoriametrics-restricted.svc.cluster.local:9428/insert/native
+    maxDiskUsage: 1GiB # buffer's max disk size if vlsingle isn't available
+  tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+  k8sCollector: # enables k8s logging and runs as a daemonset
+    enabled: true
+
+# https://docs.victoriametrics.com/operator/resources/vlagent/

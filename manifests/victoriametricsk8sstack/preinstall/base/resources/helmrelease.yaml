@@ -1,7 +1,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: victoria-metrics-agent
+  name: victoria-metrics-operator
   namespace: victoriametrics-restricted
 spec:
   interval: 15m
@@ -19,36 +19,19 @@ spec:
     strategy:
       name: RetryOnFailure
       retryInterval: 5m
-  releaseName: vma
+  releaseName: vmoperator
   targetNamespace: victoriametrics-restricted
   chartRef:
     kind: HelmChart
-    name: victoria-metrics-agent
+    name: victoria-metrics-operator
     namespace: victoriametrics-restricted
   values:
-    nameOverride: vma
-    remoteWrite:
-    - url: http://vms-server.victoriametrics-restricted.svc.cluster.local:8428/api/v1/write
-    persistentVolume:
-      enabled: true
-      storageClassName: withoutreplication
-      size: 1Gi
-    mode: deployment
-    deployment:
-      spec:
-        strategy:
-          type: Recreate # prevents file lock issue on the persistent volume. no rolling update
-    # replicaCount: 1
-    extraArgs:
-      promscrape.maxScrapeSize: 32MB # needed for k8s api server metrics size
-    podSecurityContext:
-      enabled: true
-      fsGroup: 65534
+    nameOverride: vmoperator
+    env:
+    - name: VM_ENABLESTRICTSECURITY # add default securityContext to pods and containers created by operator
+      value: true
     securityContext:
       enabled: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      runAsNonRoot: true
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
       seccompProfile:
@@ -56,3 +39,9 @@ spec:
       capabilities:
         drop:
         - ALL
+    podSecurityContext:
+      enabled: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 2000

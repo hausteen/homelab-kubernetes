@@ -1,0 +1,16 @@
+apiVersion: operator.victoriametrics.com/v1
+kind: VTSingle
+metadata:
+  name: vts
+  namespace: victoriametrics-restricted
+spec:
+  retentionPeriod: 1w
+  retentionMaxDiskSpaceUsageBytes: 9GiB
+  removePvcAfterDelete: true
+  storage:
+    storageClassName: withoutreplication
+    resources:
+      requests:
+        storage: 10Gi
+
+# https://docs.victoriametrics.com/operator/resources/vtsingle/

@@ -18,7 +18,7 @@ spec:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: vls-server
+    - name: vlsingle-vls
       port: 9428
       weight: 1
       kind: Service
