@@ -10,6 +10,6 @@ spec:
   # - config/crd/experimental
   - config/crd/standard
   ref:
-    tag: v1.6.0
+    tag: v1.7.0
 
 # be careful of gateway api version requirements for nginx gateway fabric and other applications
