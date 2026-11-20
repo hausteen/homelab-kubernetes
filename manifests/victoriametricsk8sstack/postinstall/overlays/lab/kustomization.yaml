@@ -4,3 +4,4 @@ resources:
 - resources/httproute-victorialogs.yaml
 - resources/httproute-victoriametrics.yaml
 - resources/httproute-victoriatraces.yaml
+- resources/httproute-victoriametricsagent.yaml
