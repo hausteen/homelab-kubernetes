@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: grafana
+  namespace: grafana
+spec:
+  chart: grafana
+  version: "14.5.x"
+  sourceRef:
+    kind: HelmRepository
+    name: grafana
+  interval: 24h
+  reconcileStrategy: ChartVersion

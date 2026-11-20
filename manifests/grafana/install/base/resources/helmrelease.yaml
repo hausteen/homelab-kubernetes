@@ -1,0 +1,192 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: grafana
+spec:
+  interval: 15m
+  timeout: 5m
+  install:
+    crds: Create
+    createNamespace: false
+    serverSideApply: true
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  upgrade:
+    crds: Create
+    serverSideApply: enabled
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
+  releaseName: grafana
+  targetNamespace: grafana
+  chartRef:
+    kind: HelmChart
+    name: grafana
+    namespace: grafana
+  values:
+    replicas: 1
+    persistence:
+      enabled: true
+      type: pvc
+      storageClassName: withoutreplication
+      size: 5Gi
+      accessModes:
+      - ReadWriteOnce
+    initChownData: # init container is failing the restricted namespace requirements
+      enabled: false
+    grafana.ini:
+      auth.anonymous: # this lets you have anonymous access to the dashboards as read only. the login password is dynamically generated in a secret
+        enabled: true
+        org_name: Main Org. # default organization
+        org_role: Viewer
+    analytics:
+      reporting_enabled: false
+      check_for_updates: false
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+        - name: Prometheus # it can be any name
+          type: prometheus # lowercase is correct. it tells grafana which built-in plugin or integration to use to communicate with the backend
+          uid: Prometheus # leave as uppercase. it gives the data source a stable, unique id. grafana uses it internally to reference the data source
+          access: proxy
+          url: http://vmsingle-vms.victoriametrics-restricted.svc.cluster.local:8428 # VictoriaMetrics will be the backend database
+          isDefault: true
+        - name: VictoriaMetrics
+          type: victoriametrics-metrics-datasource
+          uid: VictoriaMetrics
+          access: proxy
+          url: http://vmsingle-vms.victoriametrics-restricted.svc.cluster.local:8428
+          isDefault: false
+        - name: VictoriaLogs
+          type: victoriametrics-logs-datasource
+          uid: VictoriaLogs
+          access: proxy
+          url: http://vlsingle-vls.victoriametrics-restricted.svc.cluster.local:9428
+          isDefault: false
+        - name: VictoriaTraces
+          type: jaeger
+          uid: VictoriaTraces
+          access: proxy
+          url: http://vtsingle-vts.victoriametrics-restricted.svc.cluster.local:10428/select/jaeger
+          isDefault: false
+    plugins:
+    - victoriametrics-metrics-datasource
+    - victoriametrics-logs-datasource
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+        - name: grafana-dashboards-kubernetes
+          orgId: 1
+          folder: grafana-dashboards-kubernetes
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
+        - name: node-exporter
+          orgId: 1
+          folder: node-exporter
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/node-exporter
+        - name: victoriametrics
+          orgId: 1
+          folder: victoriametrics
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/victoriametrics
+        - name: istio
+          orgId: 1
+          folder: istio
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/istio
+    dashboards:
+      grafana-dashboards-kubernetes:
+        k8s-system-api-server:
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
+          datasource: Prometheus
+        k8s-system-coredns:
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
+          datasource: Prometheus
+        k8s-views-global:
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
+          datasource: Prometheus
+        k8s-views-namespaces:
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
+          datasource: Prometheus
+        k8s-views-nodes:
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
+          datasource: Prometheus
+        k8s-views-pods:
+          url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
+          datasource: Prometheus
+      node-exporter:
+        node-exporter-full:
+          url: https://raw.githubusercontent.com/rfmoz/grafana-dashboards/master/prometheus/node-exporter-full.json
+          datasource: Prometheus
+      victoriametrics:
+        operator:
+          url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/operator.json
+          datasource: Prometheus
+        logs-single:
+          url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaLogs/master/dashboards/victorialogs.json
+          datasource: VictoriaMetrics
+        logs-internal-state:
+          url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaLogs/master/dashboards/victorialogs-internal.json
+          datasource: VictoriaLogs
+        logs-agent:
+          url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaLogs/master/dashboards/vlagent.json
+          datasource: Prometheus
+        metrics-single:
+          url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/victoriametrics.json
+          datasource: Prometheus
+        metrics-agent:
+          url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/vmagent.json
+          datasource: VictoriaMetrics
+        traces-single:
+          url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaTraces/master/dashboards/victoriatraces.json
+          datasource: Prometheus
+        metrics-alert:
+          url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/vmalert.json
+          datasource: Prometheus
+        alert-statistics:
+          url: https://raw.githubusercontent.com/VictoriaMetrics/VictoriaMetrics/master/dashboards/alert-statistics.json
+          datasource: Prometheus
+      istio: # https://grafana.com/orgs/istio/dashboards. you can find the latest revisions
+        control-plane:
+          gnetId: 7645
+          revision: 346
+          datasource: Prometheus
+        ztunnel:
+          gnetId: 21306
+          revision: 114
+          datasource: Prometheus
+        mesh:
+          gnetId: 7639
+          revision: 347
+          datasource: Prometheus
+        service:
+          gnetId: 7636
+          revision: 346
+          datasource: Prometheus
+        workload:
+          gnetId: 7630
+          revision: 347
+          datasource: Prometheus
+        performance:
+          gnetId: 11829
+          revision: 346
+          datasource: Prometheus
+
+# https://artifacthub.io/packages/helm/grafana-community/grafana
