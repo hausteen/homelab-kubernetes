@@ -13,5 +13,5 @@ spec:
       enabled: false
     prometheus:
       enabled: true
-      url: http://vms-server.victoriametrics-restricted.svc.cluster.local:8428
+      url: http://vmsingle-vms.victoriametrics-restricted.svc.cluster.local:8428
 # https://kiali.io/docs/configuration/kialis.kiali.io/
